@@ -1,4 +1,6 @@
-
+/*
+ * hi
+ */
 public class ImageTest {
 
 	public static void main(String[] args) {
