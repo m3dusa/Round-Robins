@@ -212,30 +212,48 @@ public class Engine {
 				if1.getBum().setRGB(row, col, allColor);
 				
 				if(allColor < 10){
-					if1.getBum().setRGB(row, col, 0xff666666);
+					if1.getBum().setRGB(row, col, 0xff000000);
 				}
 				else if(allColor < 20){
-					if1.getBum().setRGB(row, col, 0xff777777);
+					if1.getBum().setRGB(row, col, 0xff111111);
 				}
 				else if(allColor < 30){
-					if1.getBum().setRGB(row, col, 0xff888888);
+					if1.getBum().setRGB(row, col, 0xff222222);
 				}
 				else if(allColor < 40){
-					if1.getBum().setRGB(row, col, 0xff999999);
+					if1.getBum().setRGB(row, col, 0xff333333);
 				}
 				else if(allColor < 50){
-					if1.getBum().setRGB(row, col, 0xffaaaaaa);
+					if1.getBum().setRGB(row, col, 0xff444444);
 				}
 				else if(allColor < 60){
-					if1.getBum().setRGB(row, col, 0xffbbbbbb);
+					if1.getBum().setRGB(row, col, 0xff555555);
 				}
 				else if(allColor < 70){
-					if1.getBum().setRGB(row, col, 0xffcccccc);
+					if1.getBum().setRGB(row, col, 0xff666666);
 				}
 				else if(allColor < 80){
+					if1.getBum().setRGB(row, col, 0xff777777);
+				}
+				else if(allColor < 90){
+					if1.getBum().setRGB(row, col, 0xff888888);
+				}
+				else if(allColor < 100){
+					if1.getBum().setRGB(row, col, 0xff999999);
+				}
+				else if(allColor < 110){
+					if1.getBum().setRGB(row, col, 0xffaaaaaa);
+				}
+				else if(allColor < 120){
+					if1.getBum().setRGB(row, col, 0xffbbbbbb);
+				}
+				else if(allColor < 130){
+					if1.getBum().setRGB(row, col, 0xffcccccc);
+				}
+				else if (allColor < 140){
 					if1.getBum().setRGB(row, col, 0xffdddddd);
 				}
-				else if (allColor < 90){
+				else if (allColor < 150){
 					if1.getBum().setRGB(row, col, 0xffeeeeee);
 				}
 				else{
