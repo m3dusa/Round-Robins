@@ -352,10 +352,12 @@ public class Engine {
 	
 	/**
 	 * This algorithm effectively amplifies the red, green, or blue color of a pixel.
+	 * It is simply a three-coloring of a multi-colored image.
+	 * <p>
 	 * First it scans through all the pixels and gets the average 
 	 * red, green, and blue values per pixel.
 	 * Then it scans through the pixels again, normalizing their red, green, and blue values
-	 * and amplifying the greater of the three, while diminishing the other two. 
+	 * and amplifying the greatest of the three, while diminishing the other two. 
 	 * <p><p>
 	 * <b>Example:</b> A pixel of color (100,150,200) might be normalized to (125, 170, 160)
 	 * and then amplified to the color (0, 255, 0), producing a green pixel. 
@@ -364,11 +366,14 @@ public class Engine {
 	 * algorithm, we might be able to easily detect the location of differences. 
 	 * If the difference from one image to another is monocromatic or at least unlike the average
 	 * color density of the compared image, then the following postulates may help:
+	 * <p><p>
 	 * [1] In a local area around the difference, one image will have an abormally abundant
-	 * amount of either red, green, or blue. 
+	 * amount of either red, green, or blue.
+	 * <p>
 	 * [2] In a local area around a non-difference, the two colors not the same as the 
 	 * monochromatic difference will be slightly more abundant than the third color. 
-	 * 
+	 * <p>
+	 * [3] As long as the differences are totally monochromatic, all differences can be identified.
 	 * @param if1 the ImageFrame to analyze
 	 */
 	public void amplifyColor(ImageFrame if1) {
