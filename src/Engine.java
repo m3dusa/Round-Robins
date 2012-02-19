@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 public class Engine {
 	private static Engine eng = null;
 	
-	private int ALGORITHM = 0;
+	private int ALGORITHM = 4;
 	
 	private boolean analyzed = false;
 
@@ -94,6 +94,9 @@ public class Engine {
 			break;
 		case 3:
 			blur(if1);
+			break;
+		case 4:
+			amplifyColor(if1);
 			break;
 		}
 		
@@ -342,6 +345,90 @@ public class Engine {
 				
 				
 				if1.getBum().setRGB(row, col, avgCol.getRGB());
+			}
+		}
+	}
+	
+	
+	/**
+	 * This algorithm effectively amplifies the red, green, or blue color of a pixel.
+	 * First it scans through all the pixels and gets the average 
+	 * red, green, and blue values per pixel.
+	 * Then it scans through the pixels again, normalizing their red, green, and blue values
+	 * and amplifying the greater of the three, while diminishing the other two. 
+	 * <p><p>
+	 * <b>Example:</b> A pixel of color (100,150,200) might be normalized to (125, 170, 160)
+	 * and then amplified to the color (0, 255, 0), producing a green pixel. 
+	 * <p><p>
+	 * <b>Thoughts:</b> When comparing two different images that go though this 'amplifyColor'
+	 * algorithm, we might be able to easily detect the location of differences. 
+	 * If the difference from one image to another is monocromatic or at least unlike the average
+	 * color density of the compared image, then the following postulates may help:
+	 * [1] In a local area around the difference, one image will have an abormally abundant
+	 * amount of either red, green, or blue. 
+	 * [2] In a local area around a non-difference, the two colors not the same as the 
+	 * monochromatic difference will be slightly more abundant than the third color. 
+	 * 
+	 * @param if1 the ImageFrame to analyze
+	 */
+	public void amplifyColor(ImageFrame if1) {
+		
+		int rCount = 0;
+		int gCount = 0;
+		int bCount = 0;
+		
+		for (int col = 1; col < if1.getHeight()-1; col++) {
+			for (int row = 1; row < if1.getWidth()-1; row++) {
+				int[] color = new int[4];
+				if1.getRar().getPixel(row, col, color);
+				int r = (int)(color[0]);
+				int g = (int)(color[1]);
+				int b = (int)(color[2]);
+				
+				rCount += r;
+				gCount += g;
+				bCount += b;
+				//if1.getBum().setRGB(row, col, avgCol.getRGB());
+			}
+		}
+		
+		int totalPix = if1.getHeight()*if1.getWidth();
+		int rAvg = rCount/totalPix;
+		int gAvg = gCount/totalPix;
+		int bAvg = bCount/totalPix;
+		
+		//System.out.println("r: "+rAvg+", g: "+gAvg+", b: "+bAvg);
+		
+		int avgColVal = (rAvg+gAvg+bAvg)/3;
+		int diffR = avgColVal - rAvg;
+		int diffG = avgColVal - gAvg;
+		int diffB = avgColVal - bAvg;
+		
+		System.out.println("r: "+diffR+", g: "+diffG+", b: "+diffB);
+		
+
+		for (int col = 1; col < if1.getHeight()-1; col++) {
+			for (int row = 1; row < if1.getWidth()-1; row++) {
+				int[] color = new int[4];
+				if1.getRar().getPixel(row, col, color);
+				int r = (int)(color[0]);
+				int g = (int)(color[1]);
+				int b = (int)(color[2]);
+				
+				r = r+diffR;
+				g = g+diffG;
+				b = b+diffB;
+				
+				if(r >= g && r>=b) {
+					if1.getBum().setRGB(row, col, 0xffff0000);
+				}
+				else if(g >= r && g>=b) {
+					if1.getBum().setRGB(row, col, 0xff00ff00);
+				}
+				else if(b >= r && b>=g) {
+					if1.getBum().setRGB(row, col, 0xff0000ff);
+				}
+				//if1.getBum().setRGB(row, col, avgCol.getRGB());
 			}
 		}
 	}

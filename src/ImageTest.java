@@ -37,6 +37,7 @@ public class ImageTest extends JFrame {
 		imgIc1 = new ImageIcon("img1.png");
 		imgIc1.setDescription("img1.png");
 		buttonImg1 = new JButton(imgIc1);
+		buttonImg1.setBorder(null);
 		pTopLeft.add(buttonImg1);
 		pTop.add(pTopLeft, BorderLayout.WEST);
 
@@ -44,6 +45,7 @@ public class ImageTest extends JFrame {
 		imgIc2 = new ImageIcon("img2.png");
 		imgIc2.setDescription("img2.png");
 		buttonImg2 = new JButton(imgIc2);
+		buttonImg2.setBorder(null);
 		pTopRight.add(buttonImg2);
 		pTop.add(pTopRight, BorderLayout.EAST);
 
@@ -52,6 +54,7 @@ public class ImageTest extends JFrame {
 		JPanel pBot = new JPanel();
 		imgIc3 = new ImageIcon("img_out.png");
 		buttonImg3 = new JButton(imgIc3);
+		buttonImg3.setBorder(null);
 		pBot.add(buttonImg3, BorderLayout.CENTER);
 
 		pane.add(pBot, BorderLayout.SOUTH);
