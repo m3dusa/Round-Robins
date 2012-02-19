@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,10 @@ import javax.imageio.ImageIO;
  */
 public class Engine {
 	private static Engine eng = null;
+	
+	private int ALGORITHM = 3;
+	
+	private boolean analyzed = false;
 
 	LinkedList<ImageFrame> imgList = new LinkedList<ImageFrame>();
 	BufferedImage bi;
@@ -34,6 +39,10 @@ public class Engine {
 		}
 		return eng;
 	}
+	
+	public boolean isAnalyzed() {
+		return analyzed;
+	}
 
 	/**
 	 * Adds an ImageFrame object to a LinkedList to eventually be analyzed. Once
@@ -54,6 +63,9 @@ public class Engine {
 
 			analyze(if1, if2);
 		}
+		else {
+			analyzed = false;
+		}
 	}
 
 	/**
@@ -66,8 +78,6 @@ public class Engine {
 	 */
 	public void analyze(ImageFrame if1, ImageFrame if2) {
 
-		int ALGORITHM = 1;
-
 		switch (ALGORITHM) {
 		case 0:
 			deltaComparison(if1, if2);
@@ -78,6 +88,9 @@ public class Engine {
 		case 2:
 			blackAndWhite(if1);
 			break;
+		case 3:
+			blur(if1);
+			break;
 		}
 
 		File output = new File("img_out.png");
@@ -86,6 +99,8 @@ public class Engine {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		analyzed = true;
 	}
 
 	/**
@@ -262,5 +277,65 @@ public class Engine {
 			}
 		}
 	}
-
+	
+	public void blur(ImageFrame if1) {
+		for (int col = 1; col < if1.getHeight()-1; col++) {
+			for (int row = 1; row < if1.getWidth()-1; row++) {
+				int[] color = new int[4];
+				if1.getRar().getPixel(row-1, col-1, color);
+				int r1 = (int)(color[0]);
+				int g1 = (int)(color[1]);
+				int b1 = (int)(color[2]);
+				
+				if1.getRar().getPixel(row-1, col, color);
+				int r2 = (int)(color[0]);
+				int g2 = (int)(color[1]);
+				int b2 = (int)(color[2]);
+				
+				if1.getRar().getPixel(row-1, col+1, color);
+				int r3 = (int)(color[0]);
+				int g3 = (int)(color[1]);
+				int b3 = (int)(color[2]);
+				
+				if1.getRar().getPixel(row, col-1, color);
+				int r4 = (int)(color[0]);
+				int g4 = (int)(color[1]);
+				int b4 = (int)(color[2]);
+				
+				if1.getRar().getPixel(row, col, color);
+				int r5 = (int)(color[0]);
+				int g5 = (int)(color[1]);
+				int b5 = (int)(color[2]);
+				
+				if1.getRar().getPixel(row, col+1, color);
+				int r6 = (int)(color[0]);
+				int g6 = (int)(color[1]);
+				int b6 = (int)(color[2]);
+				
+				if1.getRar().getPixel(row+1, col-1, color);
+				int r7 = (int)(color[0]);
+				int g7 = (int)(color[1]);
+				int b7 = (int)(color[2]);
+				
+				if1.getRar().getPixel(row+1, col, color);
+				int r8 = (int)(color[0]);
+				int g8 = (int)(color[1]);
+				int b8 = (int)(color[2]);
+				
+				if1.getRar().getPixel(row+1, col+1, color);
+				int r9 = (int)(color[0]);
+				int g9 = (int)(color[1]);
+				int b9 = (int)(color[2]);
+				
+				int avgRed = (r1+r2+r3+r4+r5+r6+r7+r8+r9)/9;
+				int avgGreen = (g1+g2+g3+g4+g5+g6+g7+g8+g9)/9;
+				int avgBlue = (b1+b2+b3+b4+b5+b6+b7+b8+b9)/9;
+				
+				Color avgCol = new Color(avgRed, avgGreen, avgBlue);
+				
+				
+				if1.getBum().setRGB(row, col, avgCol.getRGB());
+			}
+		}
+	}
 }
