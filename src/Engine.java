@@ -66,7 +66,7 @@ public class Engine {
 	 */
 	public void analyze(ImageFrame if1, ImageFrame if2) {
 
-		int ALGORITHM = 2;
+		int ALGORITHM = 1;
 
 		switch (ALGORITHM) {
 		case 0:
