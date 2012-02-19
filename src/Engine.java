@@ -15,12 +15,12 @@ import javax.imageio.ImageIO;
 public class Engine {
 	private static Engine eng = null;
 	
-	private int ALGORITHM = 3;
+	private int ALGORITHM = 0;
 	
 	private boolean analyzed = false;
 
 	LinkedList<ImageFrame> imgList = new LinkedList<ImageFrame>();
-	BufferedImage bi;
+	BufferedImage biOut;
 
 	/**
 	 * Useless constructor
@@ -42,6 +42,10 @@ public class Engine {
 	
 	public boolean isAnalyzed() {
 		return analyzed;
+	}
+	
+	public BufferedImage getBIOut() {
+		return biOut;
 	}
 
 	/**
@@ -92,13 +96,16 @@ public class Engine {
 			blur(if1);
 			break;
 		}
-
+		
+		biOut = if1.getBum();
+		
 		File output = new File("img_out.png");
 		try {
 			ImageIO.write(if1.getBum(), "png", output);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		
 		analyzed = true;
 	}
