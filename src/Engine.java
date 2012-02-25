@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 public class Engine {
 	private static Engine eng = null;
 	
-	private int ALGORITHM = 4;
+	private int ALGORITHM = 5;
 
 	LinkedList<ImageFrame> imgList = new LinkedList<ImageFrame>();
 	BufferedImage biOut;
@@ -90,8 +90,13 @@ public class Engine {
 		case 4:
 			biOut = amplifyColor(if1).getBum();
 			break;
+		case 5: 
+			// Nesting algorithms together
+			biOut = blackAndWhite( edgeDetection(if1) ).getBum();
+			break;
 		}
 		
+		biOut = if1.getBum();
 		
 		saveImage();
 	}
@@ -417,7 +422,6 @@ public class Engine {
 		
 		System.out.println("r: "+diffR+", g: "+diffG+", b: "+diffB);
 		
-
 		for (int col = 1; col < if1.getHeight()-1; col++) {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
 				int[] color = new int[4];
@@ -439,7 +443,8 @@ public class Engine {
 				else if(b >= r && b>=g) {
 					if1.getBum().setRGB(row, col, 0xff0000ff);
 				}
-				//if1.getBum().setRGB(row, col, avgCol.getRGB());''
+				
+				//if1.getBum().setRGB(row, col, 0xffff0000);
 			}
 		}
 		
