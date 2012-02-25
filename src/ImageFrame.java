@@ -33,6 +33,11 @@ public class ImageFrame {
 		rar = bum.getData();
 		
 	}
+	
+	public ImageFrame(BufferedImage bum) {
+		this.bum = bum;
+		rar = bum.getData();
+	}
 
 	public String getLocation() {
 		return location;

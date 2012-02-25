@@ -145,12 +145,14 @@ public class ImageTest extends JFrame {
 		Engine.getInstance().addImage(if1);
 		Engine.getInstance().addImage(if2);
 
-		
+		/* Uncomment to allow GUI
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				createAndShowGUI();
 			}
 		});
+		
+		*/
 
 
 	}

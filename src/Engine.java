@@ -16,8 +16,6 @@ public class Engine {
 	private static Engine eng = null;
 	
 	private int ALGORITHM = 4;
-	
-	private boolean analyzed = false;
 
 	LinkedList<ImageFrame> imgList = new LinkedList<ImageFrame>();
 	BufferedImage biOut;
@@ -39,11 +37,7 @@ public class Engine {
 		}
 		return eng;
 	}
-	
-	public boolean isAnalyzed() {
-		return analyzed;
-	}
-	
+
 	public BufferedImage getBIOut() {
 		return biOut;
 	}
@@ -67,9 +61,7 @@ public class Engine {
 
 			analyze(if1, if2);
 		}
-		else {
-			analyzed = false;
-		}
+
 	}
 
 	/**
@@ -84,37 +76,37 @@ public class Engine {
 
 		switch (ALGORITHM) {
 		case 0:
-			deltaComparison(if1, if2);
+			biOut = deltaComparison(if1, if2).getBum();
 			break;
 		case 1:
-			edgeDetection(if1);
+			biOut = edgeDetection(if1).getBum();
 			break;
 		case 2:
-			blackAndWhite(if1);
+			biOut = blackAndWhite(if1).getBum();
 			break;
 		case 3:
-			blur(if1);
+			biOut = blur(if1).getBum();
 			break;
 		case 4:
-			amplifyColor(if1);
+			biOut = amplifyColor(if1).getBum();
 			break;
 		}
 		
-		biOut = if1.getBum();
 		
+		saveImage();
+	}
+	
+	public void saveImage() {
 		File output = new File("img_out.png");
 		try {
-			ImageIO.write(if1.getBum(), "png", output);
+			ImageIO.write(biOut, "png", output);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		analyzed = true;
 	}
 
 	/**
-	 * ----- ALGORITHM 1 ----- Compares two images pixel by pixel and outputs
+	 * ----- ALGORITHM 0 ----- Compares two images pixel by pixel and outputs
 	 * 'img_out.png' with a simple XOR algorithm
 	 * 
 	 * @param if1
@@ -122,7 +114,7 @@ public class Engine {
 	 * @param if2
 	 *            the second ImageFrame
 	 */
-	public void deltaComparison(ImageFrame if1, ImageFrame if2) {
+	public ImageFrame deltaComparison(ImageFrame if1, ImageFrame if2) {
 		for (int col = 0; col < if1.getHeight(); col++) {
 			for (int row = 0; row < if1.getWidth(); row++) {
 				int[] d1Array = new int[4];
@@ -143,17 +135,19 @@ public class Engine {
 				}
 			}
 		}
+		
+		return new ImageFrame(if1.getBum());
 	}
 
 	/**
-	 * ----- ALGORITHM 2 ----- Detects edges in an image by comparing
+	 * ----- ALGORITHM 1 ----- Detects edges in an image by comparing
 	 * neighboring pixels and marking at positions that differ above some
 	 * threshold value
 	 * 
 	 * @param if1
 	 *            the ImageFrame to analyze
 	 */
-	public void edgeDetection(ImageFrame if1) {
+	public ImageFrame edgeDetection(ImageFrame if1) {
 		for (int col = 1; col < if1.getHeight() - 1; col++) {
 			for (int row = 1; row < if1.getWidth() - 1; row++) {
 
@@ -211,20 +205,24 @@ public class Engine {
 
 				int diff = Math.abs(extreme1 - extreme2);
 
-				System.out.println(diff);
+				//System.out.println(diff);
 
 				if (diff > 80) {
-					if1.getBum().setRGB(row, col, 0xff00ff00);
+					
+					if1.getBum().setRGB(row, col, 0xff00fff0);
 				}
 
 			}
 		}
+		
+		return new ImageFrame(if1.getBum());
 	}
 
 	/**
-	 * ----- ALGORITHM 3 ----- Converts image to black and white
+	 * ----- ALGORITHM 2 ----- Converts image to black and white
+	 * @param if1 the ImageFrame to analyze
 	 */
-	public void blackAndWhite(ImageFrame if1) {
+	public ImageFrame blackAndWhite(ImageFrame if1) {
 		for (int col = 0; col < if1.getHeight(); col++) {
 			for (int row = 0; row < if1.getWidth(); row++) {
 				int[] color = new int[4];
@@ -286,9 +284,15 @@ public class Engine {
 				}			
 			}
 		}
+		
+		return new ImageFrame(if1.getBum());
 	}
 	
-	public void blur(ImageFrame if1) {
+	/**
+	 * ----- ALGORITHM 3 ----- Blurs image by averaging neighboring pixels
+	 * @param if1 the ImageFrame to analyze
+	 */
+	public ImageFrame blur(ImageFrame if1) {
 		for (int col = 1; col < if1.getHeight()-1; col++) {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
 				int[] color = new int[4];
@@ -347,10 +351,12 @@ public class Engine {
 				if1.getBum().setRGB(row, col, avgCol.getRGB());
 			}
 		}
+		
+		return new ImageFrame(if1.getBum());
 	}
 	
-	
 	/**
+	 * ----- ALGORITHM 4 ----- 
 	 * This algorithm effectively amplifies the red, green, or blue color of a pixel.
 	 * It is simply a three-coloring of a multi-colored image.
 	 * <p>
@@ -376,7 +382,7 @@ public class Engine {
 	 * [3] As long as the differences are totally monochromatic, all differences can be identified.
 	 * @param if1 the ImageFrame to analyze
 	 */
-	public void amplifyColor(ImageFrame if1) {
+	public ImageFrame amplifyColor(ImageFrame if1) {
 		
 		int rCount = 0;
 		int gCount = 0;
@@ -433,8 +439,13 @@ public class Engine {
 				else if(b >= r && b>=g) {
 					if1.getBum().setRGB(row, col, 0xff0000ff);
 				}
-				//if1.getBum().setRGB(row, col, avgCol.getRGB());
+				//if1.getBum().setRGB(row, col, avgCol.getRGB());''
 			}
 		}
+		
+		return new ImageFrame(if1.getBum());
 	}
+	
+	
+	
 }
