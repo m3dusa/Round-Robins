@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 public class Engine {
 	private static Engine eng = null;
 	
-	private int ALGORITHM = 5;
+	private int ALGORITHM = 6;
 
 	LinkedList<ImageFrame> imgList = new LinkedList<ImageFrame>();
 	BufferedImage biOut;
@@ -94,9 +94,12 @@ public class Engine {
 			// Nesting algorithms together
 			biOut = blackAndWhite( edgeDetection(if1) ).getBum();
 			break;
+		case 6: 
+			// Nesting algorithms together
+			biOut = deltaComparison( amplifyColor(if1), amplifyColor(if2) ).getBum();
+			break;
 		}
 		
-		biOut = if1.getBum();
 		
 		saveImage();
 	}
@@ -136,7 +139,7 @@ public class Engine {
 
 				if (d1Array[0] != d2Array[0] || d1Array[1] != d2Array[1]
 						|| d1Array[2] != d2Array[2] || d1Array[3] != d2Array[3]) {
-					if1.getBum().setRGB(row, col, 0xff00ff00);
+					if1.getBum().setRGB(row, col, 0xff00fff0); // cyan color
 				}
 			}
 		}
