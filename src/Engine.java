@@ -1,10 +1,13 @@
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EmptyStackException;
 import java.util.LinkedList;
+import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
@@ -15,10 +18,13 @@ import javax.imageio.ImageIO;
 public class Engine {
 	private static Engine eng = null;
 	
-	private int ALGORITHM = 6;
+	private int ALGORITHM = 7;
 
 	LinkedList<ImageFrame> imgList = new LinkedList<ImageFrame>();
 	BufferedImage biOut;
+	
+	int sumX = 0;
+	int sumY = 0;
 
 	/**
 	 * Useless constructor
@@ -97,6 +103,9 @@ public class Engine {
 		case 6: 
 			// Nesting algorithms together
 			biOut = deltaComparison( amplifyColor(if1), amplifyColor(if2) ).getBum();
+			break;
+		case 7:
+			biOut = removeNoise( amplifyColor(if1) ).getBum();
 			break;
 		}
 		
@@ -454,6 +463,368 @@ public class Engine {
 		return new ImageFrame(if1.getBum());
 	}
 	
+	boolean [][] pixChecked;
 	
+	public class DensityPix {
+		public int avgx, avgy, area, col;
+		public DensityPix(int avgx, int avgy, int area, int col) {
+			this.avgx = avgx;
+			this.avgy = avgy;
+			this.area = area;
+			this.col = col;
+		}
+	}
+	
+	public ImageFrame removeNoise(ImageFrame if1) {
+		// 2-D boolean array
+		pixChecked = new boolean[if1.getWidth()][if1.getHeight()];
+		for(int i=0; i<if1.getWidth(); i++) {
+			for(int j=0; j<if1.getHeight(); j++) {
+				pixChecked[i][j] = false;
+			}
+		}
+		
+		//int area = pixAreaItr(5, 5, if1.getRar());
+		//System.out.println(area);
+		
+		ArrayList<DensityPix> densityPixList = new ArrayList<DensityPix>();
+		for (int col = 1; col < if1.getHeight()-1; col++) {
+			for (int row = 1; row < if1.getWidth()-1; row++) {
+				if(pixChecked[row][col]==false) {
+					sumX = 0;
+					sumY = 0;
+					int area = pixAreaItr(row, col, if1.getRar());
+					//System.out.println("("+row+","+col+"): "+area);
+					int avgx = sumX/area;
+					int avgy = sumY/area;
+					
+					System.out.println("("+avgx+","+avgy+"): "+area);
+					
+					int[] color = new int[4];
+					if1.getRar().getPixel(row, col, color);
+					int r = (int)(color[0]);
+					int g = (int)(color[1]);
+					int b = (int)(color[2]);
+					Color c = new Color(r, g, b);
+					
+					densityPixList.add(new DensityPix(avgx, avgy, area, c.getRGB()));
+				}
+			}
+		}
+		
+		// clear image
+		for (int col = 0; col < if1.getHeight(); col++) {
+			for (int row = 0; row < if1.getWidth(); row++) {
+				if1.getBum().setRGB(row, col, 0xffffffff);
+			}
+		}
+		
+		for(DensityPix dp : densityPixList) {
+			if1.getBum().setRGB(dp.avgx, dp.avgy, dp.col);
+		}
+		
+		return new ImageFrame(if1.getBum());
+	}
+	
+	
+	
+	/**
+	 * @deprecated Use pixAreaItr(...) method instead!
+	 * 
+	 * Finds the area of a region containing the indicated pixel at (x,y)
+	 * This recursive code words for small input but quickly errors: StackOverflow
+	 * Need to use the iterative variation of this algorithm.
+	 * Perhaps use tail recursion in this algorithm?
+	 * 
+	 * @param x
+	 * @param y
+	 * @param pixChecked
+	 * @param r
+	 * @return
+	 */
+	public int pixArea(int x, int y, boolean [][] pixChecked, Raster r) {
+		
+		int sumNorth = 0;
+		int sumEast = 0;
+		int sumSouth = 0;
+		int sumWest = 0;
+		
+		
+		System.out.println("checking "+x+", "+y);
+		
+		pixChecked[x][y] = true;
+		
+		
+		// check north
+		if(y-1 >= 0) {
+			if(pixChecked[x][y-1] == false) {
+				
+				int[] colorThis = new int[4];
+				r.getPixel(x, y, colorThis);
+				
+				int[] colorNorth = new int[4];
+				r.getPixel(x, y-1, colorNorth);
+				
+				if(colorThis[0]==colorNorth[0] && colorThis[1]==colorNorth[1] && colorThis[2]==colorNorth[2]) {
+					sumNorth = pixArea(x, y-1, pixChecked, r);
+				}
+			}
+		}
+		
+		// check east
+		if(x+1 < r.getWidth()) {
+			if(pixChecked[x+1][y] == false) {
+				
+				int[] colorThis = new int[4];
+				r.getPixel(x, y, colorThis);
+				
+				int[] colorEast = new int[4];
+				r.getPixel(x+1, y, colorEast);
+				
+				if(colorThis[0]==colorEast[0] && colorThis[1]==colorEast[1] && colorThis[2]==colorEast[2]) {
+					sumEast = pixArea(x+1, y, pixChecked, r);
+				}
+			}
+		}
+		
+		// check south
+		if(y+1 < r.getHeight()) {
+			if(pixChecked[x][y+1] == false) {
+				
+				int[] colorThis = new int[4];
+				r.getPixel(x, y, colorThis);
+				
+				int[] colorSouth = new int[4];
+				r.getPixel(x, y+1, colorSouth);
+				
+				if(colorThis[0]==colorSouth[0] && colorThis[1]==colorSouth[1] && colorThis[2]==colorSouth[2]) {
+					sumEast = pixArea(x, y+1, pixChecked, r);
+				}
+			}
+		}
+		
+		// check west
+		if(x-1 >= 0) {
+			if(pixChecked[x-1][y] == false) {
+				
+				int[] colorThis = new int[4];
+				r.getPixel(x, y, colorThis);
+				
+				int[] colorWest = new int[4];
+				r.getPixel(x-1, y, colorWest);
+				
+				if(colorThis[0]==colorWest[0] && colorThis[1]==colorWest[1] && colorThis[2]==colorWest[2]) {
+					sumEast = pixArea(x-1, y, pixChecked, r);
+				}
+			}
+		}
+		
+		
+		
+		return sumNorth + sumEast + sumSouth + sumWest + 1;
+		
+	}
+	
+	public class PixBox {
+		public int x;
+		public int y;
+	}
+	
+	
+	/**
+	 * Iterative algorithm to find the area of a region with indicated pixel
+	 * @param x
+	 * @param y
+	 * @param pixChecked
+	 * @param r
+	 * @return
+	 */
+	public int pixAreaItr(int x, int y, Raster r) {
+		
+		boolean end = false;
+		int area = 1;
+		
+		Stack<PixBox> prevPixStack = new Stack<Engine.PixBox>();
+		
+		while(!end) {
+			
+			boolean nDone = false;
+			boolean eDone = false;
+			boolean sDone = false;
+			boolean wDone = false;
+			
+			//System.out.println("checking pixel ("+x+","+y+")");
+			pixChecked[x][y] = true;
+
+			
+			// check north
+			if(y-1 >= 0) {
+				if(pixChecked[x][y-1] == false) {
+					
+					int[] colorThis = new int[4];
+					r.getPixel(x, y, colorThis);
+					
+					int[] colorNorth = new int[4];
+					r.getPixel(x, y-1, colorNorth);
+					
+					if(colorThis[0]==colorNorth[0] && colorThis[1]==colorNorth[1] && colorThis[2]==colorNorth[2]) {
+						PixBox pb = new PixBox();
+						pb.x = x;
+						pb.y = y;
+						prevPixStack.push(pb);
+						
+						x = x;
+						y = y-1;
+						area++;
+						
+						continue;
+					}
+					else {
+						nDone = true;
+						//System.out.println("north done, different color");
+					}
+				}
+				else {
+					//System.out.println("north done, checked");
+					nDone = true;
+				}
+			}
+			else {
+				//System.out.println("north done, out of bounds");
+				nDone = true;
+			}
+			
+			// check east
+			if(x+1 < r.getWidth()) {
+				if(pixChecked[x+1][y] == false) {
+					
+					int[] colorThis = new int[4];
+					r.getPixel(x, y, colorThis);
+					
+					int[] colorEast = new int[4];
+					r.getPixel(x+1, y, colorEast);
+					
+					if(colorThis[0]==colorEast[0] && colorThis[1]==colorEast[1] && colorThis[2]==colorEast[2]) {
+						PixBox pb = new PixBox();
+						pb.x = x;
+						pb.y = y;
+						prevPixStack.push(pb);
+						
+						x = x+1;
+						y = y;
+						area++;
+						
+						continue;
+					}
+					else {
+						eDone = true;
+						//System.out.println("east done, different color");
+					}
+				}
+				else {
+					eDone = true;
+					//System.out.println("east done, checked");
+				}
+			}
+			else {
+				eDone = true;
+				//System.out.println("east done, out of bounds");
+			}
+			
+			
+			// check south
+			if(y+1 < r.getHeight()) {
+				if(pixChecked[x][y+1] == false) {
+					
+					int[] colorThis = new int[4];
+					r.getPixel(x, y, colorThis);
+					
+					int[] colorSouth = new int[4];
+					r.getPixel(x, y+1, colorSouth);
+					
+					if(colorThis[0]==colorSouth[0] && colorThis[1]==colorSouth[1] && colorThis[2]==colorSouth[2]) {
+						PixBox pb = new PixBox();
+						pb.x = x;
+						pb.y = y;
+						prevPixStack.push(pb);
+						
+						x = x;
+						y = y+1;
+						area++;
+						
+						continue;
+					}
+					else {
+						sDone = true;
+						//System.out.println("south done, different color");
+					}
+				}
+				else {
+					sDone = true;
+					//System.out.println("south done, checked");
+				}
+			}
+			else {
+				sDone = true;
+				//System.out.println("south done, out of bounds");
+			}
+			
+			// check west
+			if(x-1 >= 0) {
+				if(pixChecked[x-1][y] == false) {
+					
+					int[] colorThis = new int[4];
+					r.getPixel(x, y, colorThis);
+					
+					int[] colorWest = new int[4];
+					r.getPixel(x-1, y, colorWest);
+					
+					if(colorThis[0]==colorWest[0] && colorThis[1]==colorWest[1] && colorThis[2]==colorWest[2]) {
+						PixBox pb = new PixBox();
+						pb.x = x;
+						pb.y = y;
+						prevPixStack.push(pb);
+						
+						x = x-1;
+						y = y;
+						area++;
+						
+						continue;
+					}
+					else {
+						wDone = true;
+						//System.out.println("west done, different color");
+					}
+				}
+				else {
+					wDone = true;
+					//System.out.println("west done, checked");
+				}
+			}
+			else {
+				wDone = true;
+				//System.out.println("west done, out of bounds");
+			}
+
+			
+			if(nDone && eDone && sDone && wDone) {
+				try {
+					//System.out.println("stack size: " + prevPixStack.size());
+					sumX += x;
+					sumY += y;
+					
+					PixBox pb = prevPixStack.pop();
+					x = pb.x;
+					y = pb.y;
+				}
+				catch (EmptyStackException e) {
+					end = true;
+				}
+			}
+			
+		}
+		
+		return area;
+	}
 	
 }
