@@ -1,15 +1,21 @@
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
+
+import Models.DensityPix;
+import Models.ImageFrame;
+import Models.ImageFrameEssence;
 
 /**
  * This is the main engine to compare two (or more) images. It is a singleton
@@ -105,7 +111,14 @@ public class Engine {
 			biOut = deltaComparison( amplifyColor(if1), amplifyColor(if2) ).getBum();
 			break;
 		case 7:
+			// Nesting algorithms together
 			biOut = removeNoise( amplifyColor(if1) ).getBum();
+			break;
+		case 8:
+			// Nesting algorithms together
+			biOut = removeNoise( amplifyColor(if1) ).getBum();
+			//ArrayList<DensityPix> densityPixList = removeNoise( amplifyColor(if1) ).getDensityPixList();
+
 			break;
 		}
 		
@@ -129,7 +142,7 @@ public class Engine {
 	 * @param p An x,y pair to amplify
 	 * @param intensity changes magnitude of effect
 	 */
-	public void amplifyPix(ImageFrame if1, Pix p, int intensity) {
+	public void amplifyPix(ImageFrame if1, Point p, int intensity) {
 		int pixArr[] = new int[4];
 		if1.getBum().getData().getPixel(p.x, p.y, pixArr);
 		Color col = new Color(pixArr[0], pixArr[1], pixArr[2]);
@@ -489,22 +502,7 @@ public class Engine {
 	
 	boolean [][] pixChecked;
 	
-	public class Pix {
-		int x, y;
-		public Pix(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-	}
 	
-	public class DensityPix extends Pix {
-		public int area, col;
-		public DensityPix(int x, int y, int area, int col) {
-			super(x, y);
-			this.area = area;
-			this.col = col;
-		}
-	}
 	
 	public ImageFrame removeNoise(ImageFrame if1) {
 		// 2-D boolean array
@@ -550,15 +548,36 @@ public class Engine {
 			}
 		}
 		
+		System.out.println("dens size: "+densityPixList.size());
+		
 		// filter out weaker densities
-		if(densityPixList.size()>3) {
-			densityPixList = new ArrayList<DensityPix>(densityPixList.subList(0, 3));
+		Collections.sort(densityPixList, new Comparator<DensityPix>() {
+			@Override
+			public int compare(DensityPix o1, DensityPix o2) {
+				if(o1.area > o2.area) 
+					return -1;
+				if(o1.area < o2.area) 
+					return 1;
+				else return 0;
+			}
+			
+		});
+		
+		if(densityPixList.size()>2) {
+			densityPixList = new ArrayList<DensityPix>(densityPixList.subList(0, 2));
 		}
+		
 		
 		for(DensityPix dp : densityPixList) {
 			if1.getBum().setRGB(dp.x, dp.y, dp.col);
-			amplifyPix(if1, dp, 1);
+			
+			// optionally amplify colors
+			amplifyPix(if1, dp, 2);
 		}
+		
+		
+		//ImageFrameEssence ife = new ImageFrameEssence(if1.getBum());
+		//ife.setDensityPixList(densityPixList);
 		
 		return new ImageFrame(if1.getBum());
 	}
