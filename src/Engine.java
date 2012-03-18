@@ -121,6 +121,30 @@ public class Engine {
 			e.printStackTrace();
 		}
 	}
+	
+	/** Amplifies the color at a point.
+	 * TODO: FIX ME!
+	 * @WARNING will break on points close to the edge
+	 * @param if1 The ImageFrame to draw on
+	 * @param p An x,y pair to amplify
+	 * @param intensity changes magnitude of effect
+	 */
+	public void amplifyPix(ImageFrame if1, Pix p, int intensity) {
+		int pixArr[] = new int[4];
+		if1.getBum().getData().getPixel(p.x, p.y, pixArr);
+		Color col = new Color(pixArr[0], pixArr[1], pixArr[2]);
+		for(int i=0; i<intensity; i++) {
+			if1.getBum().setRGB(p.x+i, p.y, col.getRGB());
+			if1.getBum().setRGB(p.x-i, p.y, col.getRGB());
+			if1.getBum().setRGB(p.x+i, p.y+i, col.getRGB());
+			if1.getBum().setRGB(p.x-i, p.y+i, col.getRGB());
+			if1.getBum().setRGB(p.x+i, p.y-i, col.getRGB());
+			if1.getBum().setRGB(p.x-i, p.y-i, col.getRGB());
+			if1.getBum().setRGB(p.x, p.y+i, col.getRGB());
+			if1.getBum().setRGB(p.x, p.y-i, col.getRGB());
+		}
+		
+	}
 
 	/**
 	 * ----- ALGORITHM 0 ----- Compares two images pixel by pixel and outputs
@@ -465,11 +489,18 @@ public class Engine {
 	
 	boolean [][] pixChecked;
 	
-	public class DensityPix {
-		public int avgx, avgy, area, col;
-		public DensityPix(int avgx, int avgy, int area, int col) {
-			this.avgx = avgx;
-			this.avgy = avgy;
+	public class Pix {
+		int x, y;
+		public Pix(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
+	public class DensityPix extends Pix {
+		public int area, col;
+		public DensityPix(int x, int y, int area, int col) {
+			super(x, y);
 			this.area = area;
 			this.col = col;
 		}
@@ -519,8 +550,14 @@ public class Engine {
 			}
 		}
 		
+		// filter out weaker densities
+		if(densityPixList.size()>3) {
+			densityPixList = new ArrayList<DensityPix>(densityPixList.subList(0, 3));
+		}
+		
 		for(DensityPix dp : densityPixList) {
-			if1.getBum().setRGB(dp.avgx, dp.avgy, dp.col);
+			if1.getBum().setRGB(dp.x, dp.y, dp.col);
+			amplifyPix(if1, dp, 1);
 		}
 		
 		return new ImageFrame(if1.getBum());
