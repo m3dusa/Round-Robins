@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EmptyStackException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -15,7 +16,6 @@ import javax.imageio.ImageIO;
 
 import Models.DensityPix;
 import Models.ImageFrame;
-import Models.ImageFrameEssence;
 
 /**
  * This is the main engine to compare two (or more) images. It is a singleton
@@ -24,18 +24,38 @@ import Models.ImageFrameEssence;
 public class Engine {
 	private static Engine eng = null;
 	
-	private int ALGORITHM = 7;
+	private int ALGORITHM = 4;
 
 	LinkedList<ImageFrame> imgList = new LinkedList<ImageFrame>();
-	BufferedImage biOut;
+	BufferedImage biLast;
+	BufferedImage biFin;
 	
 	int sumX = 0;
 	int sumY = 0;
+	
+	static int ALG_AMPLIFY = 4;
+	static int ALG_DELTA = 0;
+	static int ALG_DELTA_AMPLIFY = 6;
+	static int ALG_ADD = 9;
+	static int ALG_ADD_SIMPLIFY_AMPLIFY = 10;
+	static int ALG_SIMPLIFY_AMPLIFY = 11;
+	
+	// alg -> arguments
+	HashMap<Integer, Integer> algorithmMap = new HashMap<Integer, Integer>();
 
 	/**
-	 * Useless constructor
+	 * Constructor
 	 */
 	public Engine() {
+		algorithmMap.put(Engine.ALG_AMPLIFY, 1);
+		algorithmMap.put(Engine.ALG_DELTA, 2);
+		algorithmMap.put(Engine.ALG_DELTA_AMPLIFY, 2);
+		algorithmMap.put(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, 2);
+		algorithmMap.put(Engine.ALG_SIMPLIFY_AMPLIFY, 1);
+	}
+	
+	public HashMap<Integer, Integer> getAlgoMap() {
+		return algorithmMap;
 	}
 
 	/**
@@ -50,8 +70,12 @@ public class Engine {
 		return eng;
 	}
 
-	public BufferedImage getBIOut() {
-		return biOut;
+	public BufferedImage getbiLast() {
+		return biLast;
+	}
+	
+	public BufferedImage getbiFin() {
+		return biFin;
 	}
 
 	/**
@@ -62,6 +86,7 @@ public class Engine {
 	 * @param imgFrame
 	 *            An image to eventually be analyzed
 	 */
+	
 	public void addImage(ImageFrame imgFrame) {
 		imgList.add(imgFrame);
 
@@ -71,9 +96,48 @@ public class Engine {
 			ImageFrame if2 = imgList.getFirst();
 			imgList.removeFirst();
 
-			analyze(if1, if2);
+			findDiff(if1, if2);
 		}
-
+	}
+	
+	public void findDiff(ImageFrame if1, ImageFrame if2) {
+		biFin = process(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, if1, if2);
+		saveImage();
+	}
+	
+	public BufferedImage process(int algorithm, ImageFrame img) {
+		
+		if(algorithm==Engine.ALG_AMPLIFY) {
+			biLast = amplifyColor(img).getBum();
+			return biLast;
+		}
+		if(algorithm==Engine.ALG_SIMPLIFY_AMPLIFY) {
+			biLast = removeNoise(amplifyColor(img)).getBum();
+			return biLast;
+		}
+		
+		return null;
+	}
+	
+	public BufferedImage process(int algorithm, ImageFrame img1, ImageFrame img2) {
+		if(algorithm==Engine.ALG_DELTA) {
+			biLast = deltaComparison(img1, img2).getBum();
+			return biLast;
+		}
+		else if(algorithm==Engine.ALG_DELTA_AMPLIFY) {
+			biLast = deltaComparison(amplifyColor(img1), amplifyColor(img2)).getBum();
+			return biLast;
+		}
+		else if(algorithm==Engine.ALG_ADD) {
+			biLast = add(img1, img2).getBum();
+			return biLast;
+		}
+		else if(algorithm==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
+			biLast = add(removeNoise( amplifyColor(img1) ), removeNoise( amplifyColor(img2) )).getBum();
+			return biLast;
+		}
+		
+		return null;
 	}
 
 	/**
@@ -88,37 +152,38 @@ public class Engine {
 
 		switch (ALGORITHM) {
 		case 0:
-			biOut = deltaComparison(if1, if2).getBum();
+			biLast = deltaComparison(if1, if2).getBum();
 			break;
 		case 1:
-			biOut = edgeDetection(if1).getBum();
+			biLast = edgeDetection(if1).getBum();
 			break;
 		case 2:
-			biOut = blackAndWhite(if1).getBum();
+			biLast = blackAndWhite(if1).getBum();
 			break;
 		case 3:
-			biOut = blur(if1).getBum();
+			biLast = blur(if1).getBum();
 			break;
 		case 4:
-			biOut = amplifyColor(if1).getBum();
+			biLast = amplifyColor(if1).getBum();
 			break;
 		case 5: 
 			// Nesting algorithms together
-			biOut = blackAndWhite( edgeDetection(if1) ).getBum();
+			biLast = blackAndWhite( edgeDetection(if1) ).getBum();
 			break;
 		case 6: 
 			// Nesting algorithms together
-			biOut = deltaComparison( amplifyColor(if1), amplifyColor(if2) ).getBum();
+			biLast = deltaComparison( amplifyColor(if1), amplifyColor(if2) ).getBum();
 			break;
 		case 7:
 			// Nesting algorithms together
-			biOut = removeNoise( amplifyColor(if1) ).getBum();
+			biLast = removeNoise( amplifyColor(if1) ).getBum();
 			break;
 		case 8:
 			// Nesting algorithms together
-			biOut = removeNoise( amplifyColor(if1) ).getBum();
+			biLast = removeNoise( amplifyColor(if1) ).getBum();
 			//ArrayList<DensityPix> densityPixList = removeNoise( amplifyColor(if1) ).getDensityPixList();
-
+		case 9:
+			biLast = add(if1, if2).getBum();
 			break;
 		}
 		
@@ -129,7 +194,7 @@ public class Engine {
 	public void saveImage() {
 		File output = new File("img_out.png");
 		try {
-			ImageIO.write(biOut, "png", output);
+			ImageIO.write(biLast, "png", output);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -572,7 +637,7 @@ public class Engine {
 			if1.getBum().setRGB(dp.x, dp.y, dp.col);
 			
 			// optionally amplify colors
-			amplifyPix(if1, dp, 2);
+			 amplifyPix(if1, dp, 2);
 		}
 		
 		
@@ -582,6 +647,31 @@ public class Engine {
 		return new ImageFrame(if1.getBum());
 	}
 	
+	
+	//TODO
+	public ImageFrame add(ImageFrame if1, ImageFrame if2) {
+		
+		int smallerWidth = (if1.getWidth() < if2.getWidth()) ? if1.getWidth() : if2.getWidth();
+		int smallerHeight = (if1.getHeight() < if2.getHeight()) ? if1.getHeight() : if2.getHeight();
+		
+		for(int h=0; h<smallerHeight; h++) {
+			for(int w=0; w<smallerWidth; w++) {
+				int [] pixArr1 = new int[4];
+				if1.getRar().getPixel(w, h, pixArr1);
+				
+				int [] pixArr2 = new int[4];
+				if1.getRar().getPixel(w, h, pixArr2);
+				
+				int newr = (pixArr1[0]+pixArr2[0])>255 ? 255 : pixArr1[0]+pixArr2[0];
+				int newg = (pixArr1[1]+pixArr2[1])>255 ? 255 : pixArr1[1]+pixArr2[1];
+				int newb = (pixArr1[2]+pixArr2[2])>255 ? 255 : pixArr1[2]+pixArr2[2];
+				
+				if1.getBum().setRGB(w, h, new Color(newr, newg, newb).getRGB());
+			}
+		}
+		
+		return new ImageFrame(if1.getBum());
+	}
 	
 	
 	/**
@@ -882,5 +972,6 @@ public class Engine {
 		
 		return area;
 	}
+
 	
 }

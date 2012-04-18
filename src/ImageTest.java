@@ -21,7 +21,7 @@ public class ImageTest extends JFrame {
 	ImageIcon imgIc1;
 	JButton buttonImg2;
 	ImageIcon imgIc2;
-	JButton buttonImg3;
+	static JButton buttonImg3;
 	ImageIcon imgIc3;
 
 	public ImageTest(String name) {
@@ -83,7 +83,7 @@ public class ImageTest extends JFrame {
 					Engine.getInstance().addImage(oldImgFrame);
 
 
-					ImageIcon imgIc3 = new ImageIcon(Engine.getInstance().getBIOut());
+					ImageIcon imgIc3 = new ImageIcon(Engine.getInstance().getbiFin());
 					buttonImg3.setIcon(imgIc3);
 
 				}
@@ -113,7 +113,7 @@ public class ImageTest extends JFrame {
 					Engine.getInstance().addImage(oldImgFrame);
 
 
-					ImageIcon imgIc3 = new ImageIcon(Engine.getInstance().getBIOut());
+					ImageIcon imgIc3 = new ImageIcon(Engine.getInstance().getbiFin());
 					buttonImg3.setIcon(imgIc3);
 
 				}
@@ -136,6 +136,10 @@ public class ImageTest extends JFrame {
 		frame.addComponentsToPane(frame.getContentPane());
 		frame.pack();
 		frame.setVisible(true);
+		
+		ImageIcon imgIc3 = new ImageIcon( Engine.getInstance().getbiFin() );
+		buttonImg3.setIcon(imgIc3);
+		frame.pack();
 	}
 
 
@@ -146,15 +150,14 @@ public class ImageTest extends JFrame {
 
 		Engine.getInstance().addImage(if1);
 		Engine.getInstance().addImage(if2);
-
-		/* Uncomment to allow GUI
+		
+		// Uncomment to allow GUI
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				createAndShowGUI();
 			}
 		});
 		
-		*/
 
 
 	}
