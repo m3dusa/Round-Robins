@@ -118,17 +118,10 @@ public class GUI extends javax.swing.JFrame {
 			}
 			{
 				diff = new JButton();
-				diff.setText("Show Difference:");
 				diff.setLayout(null);
-				diff.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						diffActionPerformed(evt);
-					}
-				});
 			}
 			{
 				pic2 = new JButton();
-				pic2.setText("Select Picture2:");
 				pic2.setLayout(null);
 				pic2.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
@@ -138,7 +131,6 @@ public class GUI extends javax.swing.JFrame {
 			}
 			{
 				a1 = new JButton();
-				a1.setText("Select a1:");
 				a1.setLayout(null);
 				a1.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
@@ -148,7 +140,6 @@ public class GUI extends javax.swing.JFrame {
 			}
 			{
 				a2 = new JButton();
-				a2.setText("Select a2:");
 				a2.setLayout(null);
 				a2.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
@@ -158,7 +149,6 @@ public class GUI extends javax.swing.JFrame {
 			}
 			{
 				a3 = new JButton();
-				a3.setText("Select a3:");
 				a3.setLayout(null);
 				a3.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
@@ -168,7 +158,6 @@ public class GUI extends javax.swing.JFrame {
 			}
 			{
 				a4 = new JButton();
-				a4.setText("Select a4:");
 				a4.setLayout(null);
 				a4.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
@@ -188,15 +177,15 @@ public class GUI extends javax.swing.JFrame {
 				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(a4, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 228, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(a1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(a3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 225, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(a2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 224, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(a1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 228, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(a3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 228, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(a2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 228, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(a1La, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(a2La, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(a3La, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(a4La, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				    .addComponent(a4La, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(a2La, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
@@ -212,35 +201,39 @@ public class GUI extends javax.swing.JFrame {
 				                .addGap(0, 0, Short.MAX_VALUE))
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(pic2La, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 175, Short.MAX_VALUE))))
+				                .addGap(0, 175, Short.MAX_VALUE)))
+				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED))
 				    .addGroup(thisLayout.createSequentialGroup()
 				        .addGroup(thisLayout.createParallelGroup()
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                .addGap(0, 7, Short.MAX_VALUE)
-				                .addComponent(a1, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE))
+				                .addGap(7)
+				                .addComponent(a1La, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE))
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                .addComponent(a1La, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE)
+				                .addComponent(a1, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE)
 				                .addGap(7))
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
 				                .addGap(116)))
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				        .addGroup(thisLayout.createParallelGroup()
-				            .addComponent(a2La, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(a2La, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE)
 				            .addComponent(a2, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE))
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				        .addGap(21)
 				        .addGroup(thisLayout.createParallelGroup()
-				            .addComponent(a3La, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
-				            .addComponent(a3, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE))
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                .addGap(0, 0, Short.MAX_VALUE)
+				                .addComponent(a3, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
+				                .addGap(8))
+				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                .addGap(0, 8, Short.MAX_VALUE)
+				                .addComponent(a3La, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)))
 				        .addGroup(thisLayout.createParallelGroup()
 				            .addComponent(a4La, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 195, GroupLayout.PREFERRED_SIZE)
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(a4, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 10, GroupLayout.PREFERRED_SIZE)))))
-				.addContainerGap(16, 16));
+				                .addGap(10)))))
+				.addGap(7));
 			pack();
-			this.setSize(825, 606);
+			this.setSize(817, 605);
 		} catch (Exception e) {
 		    //add your error handling code here
 			e.printStackTrace();
@@ -279,29 +272,24 @@ public class GUI extends javax.swing.JFrame {
 		}
 	}
 	
-	private void diffActionPerformed(ActionEvent evt) {
-		System.out.println("Selected picture difference");
-		//TODO add your code for diff.actionPerformed
-	}
-	
 	private void a1ActionPerformed(ActionEvent evt) {
-		System.out.println("Selected a1");
-		//TODO add your code for a1.actionPerformed
+		SelectAlg alg1 = new SelectAlg();
+		alg1.setVisible(true);
 	}
 	
 	private void a2ActionPerformed(ActionEvent evt) {
-		System.out.println("Selected a2");
-		//TODO add your code for a2.actionPerformed
+		SelectAlg alg2 = new SelectAlg();
+		alg2.setVisible(true);
 	}
 	
 	private void a3ActionPerformed(ActionEvent evt) {
-		System.out.println("Selected a3");
-		//TODO add your code for a3.actionPerformed
+		SelectAlg alg3 = new SelectAlg();
+		alg3.setVisible(true);
 	}
 	
 	private void a4ActionPerformed(ActionEvent evt) {
-		System.out.println("Selected a4");
-		//TODO add your code for a4.actionPerformed
+		SelectAlg alg4 = new SelectAlg();
+		alg4.setVisible(true);
 	}
 
 }
