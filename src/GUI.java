@@ -265,7 +265,18 @@ public class GUI extends javax.swing.JFrame {
 	
 	private void pic2ActionPerformed(ActionEvent evt) {
 		System.out.println("Selected picture 2");
-		//TODO add your code for pic2.actionPerformed
+		final JFileChooser fc = new JFileChooser("./");
+		int returnVal = fc.showOpenDialog(GUI.this);
+		if(returnVal == 0) {
+			String path = fc.getSelectedFile().toString();
+			//ImageIcon imgIc1 = new ImageIcon(path);
+			ImageIcon imgIc2 = new ImageIcon(path);
+			imgIc2.setDescription(path);
+			pic2.setIcon(imgIc2);
+
+			ImageFrame newImgFrame = new ImageFrame(path);
+			Engine.getInstance().addImage(newImgFrame);
+		}
 	}
 	
 	private void diffActionPerformed(ActionEvent evt) {
