@@ -36,7 +36,7 @@ public class Engine {
 	static int ALG_AMPLIFY = 4;
 	static int ALG_DELTA = 0;
 	static int ALG_DELTA_AMPLIFY = 6;
-	static int ALG_ADD = 9;
+	static int ALG_AVG = 9;
 	static int ALG_ADD_SIMPLIFY_AMPLIFY = 10;
 	static int ALG_SIMPLIFY_AMPLIFY = 11;
 	
@@ -101,7 +101,9 @@ public class Engine {
 	}
 	
 	public void findDiff(ImageFrame if1, ImageFrame if2) {
-		biFin = process(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, if1, if2);
+//		biFin = process(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, if1, if2);
+//		biFin = process(Engine.ALG_SIMPLIFY_AMPLIFY, if2);
+		biFin = process(Engine.ALG_AVG, if1, if2);
 		saveImage();
 	}
 	
@@ -128,12 +130,12 @@ public class Engine {
 			biLast = deltaComparison(amplifyColor(img1), amplifyColor(img2)).getBum();
 			return biLast;
 		}
-		else if(algorithm==Engine.ALG_ADD) {
-			biLast = add(img1, img2).getBum();
+		else if(algorithm==Engine.ALG_AVG) {
+			biLast = avg(img1, img2).getBum();
 			return biLast;
 		}
 		else if(algorithm==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
-			biLast = add(removeNoise( amplifyColor(img1) ), removeNoise( amplifyColor(img2) )).getBum();
+			biLast = avg(removeNoise( amplifyColor(img1) ), removeNoise( amplifyColor(img2) )).getBum();
 			return biLast;
 		}
 		
@@ -183,7 +185,7 @@ public class Engine {
 			biLast = removeNoise( amplifyColor(if1) ).getBum();
 			//ArrayList<DensityPix> densityPixList = removeNoise( amplifyColor(if1) ).getDensityPixList();
 		case 9:
-			biLast = add(if1, if2).getBum();
+			biLast = avg(if1, if2).getBum();
 			break;
 		}
 		
@@ -511,9 +513,19 @@ public class Engine {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
 				int[] color = new int[4];
 				if1.getRar().getPixel(row, col, color);
+				
 				int r = (int)(color[0]);
 				int g = (int)(color[1]);
 				int b = (int)(color[2]);
+				
+				int alpha = color[3];
+				//System.out.println("("+row+","+col+")="+alpha);
+				
+				//System.out.println();
+				
+				if(alpha==0) {
+					continue;
+				}
 				
 				rCount += r;
 				gCount += g;
@@ -527,14 +539,14 @@ public class Engine {
 		int gAvg = gCount/totalPix;
 		int bAvg = bCount/totalPix;
 		
-		//System.out.println("r: "+rAvg+", g: "+gAvg+", b: "+bAvg);
+		System.out.println("r: "+rAvg+", g: "+gAvg+", b: "+bAvg);
 		
 		int avgColVal = (rAvg+gAvg+bAvg)/3;
 		int diffR = avgColVal - rAvg;
 		int diffG = avgColVal - gAvg;
 		int diffB = avgColVal - bAvg;
 		
-		System.out.println("r: "+diffR+", g: "+diffG+", b: "+diffB);
+		//System.out.println("r: "+diffR+", g: "+diffG+", b: "+diffB);
 		
 		for (int col = 1; col < if1.getHeight()-1; col++) {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
@@ -543,6 +555,12 @@ public class Engine {
 				int r = (int)(color[0]);
 				int g = (int)(color[1]);
 				int b = (int)(color[2]);
+				
+				int alpha = color[3];
+				if(alpha==0) {
+					//System.out.println("alpha found, skipping");
+					continue;
+				}
 				
 				r = r+diffR;
 				g = g+diffG;
@@ -584,6 +602,19 @@ public class Engine {
 		ArrayList<DensityPix> densityPixList = new ArrayList<DensityPix>();
 		for (int col = 1; col < if1.getHeight()-1; col++) {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
+				
+				int[] color = new int[4];
+				if1.getRar().getPixel(row, col, color);
+				int r = (int)(color[0]);
+				int g = (int)(color[1]);
+				int b = (int)(color[2]);
+				
+				int alpha = color[3];
+				
+				if(alpha==0) {
+					continue;
+				}
+				
 				if(pixChecked[row][col]==false) {
 					sumX = 0;
 					sumY = 0;
@@ -594,11 +625,7 @@ public class Engine {
 					
 					System.out.println("("+avgx+","+avgy+"): "+area);
 					
-					int[] color = new int[4];
-					if1.getRar().getPixel(row, col, color);
-					int r = (int)(color[0]);
-					int g = (int)(color[1]);
-					int b = (int)(color[2]);
+					
 					Color c = new Color(r, g, b);
 					
 					densityPixList.add(new DensityPix(avgx, avgy, area, c.getRGB()));
@@ -649,7 +676,7 @@ public class Engine {
 	
 	
 	//TODO
-	public ImageFrame add(ImageFrame if1, ImageFrame if2) {
+	public ImageFrame avg(ImageFrame if1, ImageFrame if2) {
 		
 		int smallerWidth = (if1.getWidth() < if2.getWidth()) ? if1.getWidth() : if2.getWidth();
 		int smallerHeight = (if1.getHeight() < if2.getHeight()) ? if1.getHeight() : if2.getHeight();
@@ -660,11 +687,16 @@ public class Engine {
 				if1.getRar().getPixel(w, h, pixArr1);
 				
 				int [] pixArr2 = new int[4];
-				if1.getRar().getPixel(w, h, pixArr2);
+				if2.getRar().getPixel(w, h, pixArr2);
 				
-				int newr = (pixArr1[0]+pixArr2[0])>255 ? 255 : pixArr1[0]+pixArr2[0];
-				int newg = (pixArr1[1]+pixArr2[1])>255 ? 255 : pixArr1[1]+pixArr2[1];
-				int newb = (pixArr1[2]+pixArr2[2])>255 ? 255 : pixArr1[2]+pixArr2[2];
+				if(pixArr1[3]==0 || pixArr2[3]==0) {
+					continue;
+				}
+				
+				int newr = (pixArr1[0]+pixArr2[0])/2;
+				int newg = (pixArr1[1]+pixArr2[1])/2;
+				int newb = (pixArr1[2]+pixArr2[2])/2;
+				
 				
 				if1.getBum().setRGB(w, h, new Color(newr, newg, newb).getRGB());
 			}
