@@ -67,7 +67,7 @@ public class GUI extends javax.swing.JFrame {
 				a4Layout.setHgap(5);
 				a4Layout.setVgap(5);
 				pic1.setText("Select Picture1:");
-				ImageIcon imgI1 = new ImageIcon( Engine.getInstance().getBIOut());
+				ImageIcon imgI1 = new ImageIcon( Engine.getInstance().getbiLast());
 				pic1.setIcon(imgI1);
 				pic1.setLayout(null);
 			}
