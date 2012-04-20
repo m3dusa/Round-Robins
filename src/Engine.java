@@ -101,9 +101,9 @@ public class Engine {
 	}
 	
 	public void findDiff(ImageFrame if1, ImageFrame if2) {
-//		biFin = process(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, if1, if2);
+		biFin = process(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, if1, if2);
 //		biFin = process(Engine.ALG_SIMPLIFY_AMPLIFY, if2);
-		biFin = process(Engine.ALG_AVG, if1, if2);
+//		biFin = process(Engine.ALG_AVG, if1, if2);
 		saveImage();
 	}
 	
@@ -524,6 +524,7 @@ public class Engine {
 				//System.out.println();
 				
 				if(alpha==0) {
+					System.out.println("("+row+","+col+")="+alpha);
 					continue;
 				}
 				
