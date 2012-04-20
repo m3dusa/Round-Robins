@@ -33,12 +33,14 @@ public class Engine {
 	int sumX = 0;
 	int sumY = 0;
 	
+	static int ALG_EDGE = 1;
 	static int ALG_AMPLIFY = 4;
 	static int ALG_DELTA = 0;
 	static int ALG_DELTA_AMPLIFY = 6;
 	static int ALG_AVG = 9;
 	static int ALG_ADD_SIMPLIFY_AMPLIFY = 10;
 	static int ALG_SIMPLIFY_AMPLIFY = 11;
+	static int ALG_BLACKWHITE = 11;
 	
 	// alg -> arguments
 	HashMap<Integer, Integer> algorithmMap = new HashMap<Integer, Integer>();
@@ -47,11 +49,14 @@ public class Engine {
 	 * Constructor
 	 */
 	public Engine() {
+		algorithmMap.put(Engine.ALG_EDGE, 1);
 		algorithmMap.put(Engine.ALG_AMPLIFY, 1);
 		algorithmMap.put(Engine.ALG_DELTA, 2);
 		algorithmMap.put(Engine.ALG_DELTA_AMPLIFY, 2);
+		algorithmMap.put(Engine.ALG_AVG, 2);
 		algorithmMap.put(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, 2);
 		algorithmMap.put(Engine.ALG_SIMPLIFY_AMPLIFY, 1);
+		algorithmMap.put(Engine.ALG_BLACKWHITE, 1);
 	}
 	
 	public HashMap<Integer, Integer> getAlgoMap() {
@@ -115,6 +120,14 @@ public class Engine {
 		}
 		if(algorithm==Engine.ALG_SIMPLIFY_AMPLIFY) {
 			biLast = removeNoise(amplifyColor(img)).getBum();
+			return biLast;
+		}
+		if(algorithm==Engine.ALG_EDGE) {
+			biLast = edgeDetection(img).getBum();
+			return biLast;
+		}
+		if(algorithm==Engine.ALG_BLACKWHITE) {
+			biLast = blackAndWhite(img).getBum();
 			return biLast;
 		}
 		
