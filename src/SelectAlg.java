@@ -69,7 +69,7 @@ public class SelectAlg extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			{
 				
-				ListModel algMenuModel = new DefaultComboBoxModel(new String[] { "Item One", "Item Two" });
+				ListModel algMenuModel = new DefaultComboBoxModel(Engine.getInstance().getAlgoStrings());
 				algMenu = new JList();
 				GridLayout algLaLayout = new GridLayout(1, 1);
 				algLaLayout.setColumns(1);

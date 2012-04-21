@@ -66,29 +66,29 @@ public class Engine {
 	public String[] getAlgoStrings() {
 		String retStr[] = new String[algorithmMap.size()];
 		
-		for(Integer i : algorithmMap.keySet()) {
-			if(i==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
+		for(int i = 0; i< algorithmMap.keySet().size(); i++) {
+			if(algorithmMap.get(i)==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
 				retStr[i] = "Add(Simplify(Amplify))";
 			}
-			else if(i==Engine.ALG_AMPLIFY) {
+			else if(algorithmMap.get(i)==Engine.ALG_AMPLIFY) {
 				retStr[i] = "Amplify";
 			}
-			else if(i==Engine.ALG_AVG) {
+			else if(algorithmMap.get(i)==Engine.ALG_AVG) {
 				retStr[i] = "Average";
 			}
-			else if(i==Engine.ALG_BLACKWHITE) {
+			else if(algorithmMap.get(i)==Engine.ALG_BLACKWHITE) {
 				retStr[i] = "Black and White";
 			}
-			else if(i==Engine.ALG_DELTA) {
+			else if(algorithmMap.get(i)==Engine.ALG_DELTA) {
 				retStr[i] = "Delta";
 			}
-			else if(i==Engine.ALG_DELTA_AMPLIFY) {
+			else if(algorithmMap.get(i)==Engine.ALG_DELTA_AMPLIFY) {
 				retStr[i] = "Delta(Amplify)";
 			}
-			else if(i==Engine.ALG_EDGE) {
+			else if(algorithmMap.get(i)==Engine.ALG_EDGE) {
 				retStr[i] = "Edge";
 			}
-			else if(i==Engine.ALG_SIMPLIFY_AMPLIFY) {
+			else if(algorithmMap.get(i)==Engine.ALG_SIMPLIFY_AMPLIFY) {
 				retStr[i] = "Simplify(Amplify)";
 			}
 		}
