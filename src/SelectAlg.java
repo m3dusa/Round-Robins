@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.HashMap;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -63,11 +65,11 @@ public class SelectAlg extends javax.swing.JFrame {
 		try {
 			GroupLayout thisLayout = new GroupLayout((JComponent)getContentPane());
 			getContentPane().setLayout(thisLayout);
+			//HashMap<Integer, Integer> myMap = Engine.getInstance().algorithmMap;
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			{
-				ListModel algMenuModel = 
-						new DefaultComboBoxModel(
-								new String[] { "Item One", "Item Two" });
+				
+				ListModel algMenuModel = new DefaultComboBoxModel(new String[] { "Item One", "Item Two" });
 				algMenu = new JList();
 				GridLayout algLaLayout = new GridLayout(1, 1);
 				algLaLayout.setColumns(1);
