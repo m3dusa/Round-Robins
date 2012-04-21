@@ -79,60 +79,55 @@ public class Engine {
 				String s = "Avg(Simplify(Amplify))";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
-				revMap.put(s, c);
+				revMap.put(s, ALG_AVG_SIMPLIFY_AMPLIFY);
 			}
 			else if(i==Engine.ALG_AMPLIFY) {
 				String s = "Amplify";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
-				revMap.put(s, c);
+				revMap.put(s, ALG_AMPLIFY);
 			}
 			else if(i==Engine.ALG_AVG) {
 				String s = "Average";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
-				revMap.put(s, c);
+				revMap.put(s, ALG_AVG);
 			}
 			else if(i==Engine.ALG_BLACKWHITE) {
 				String s = "Black and White";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
-				revMap.put(s, c);
+				revMap.put(s, ALG_BLACKWHITE);
 			}
 			else if(i==Engine.ALG_DELTA) {
 				String s = "Delta";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
-				revMap.put(s, c);
+				revMap.put(s, ALG_DELTA);
 			}
 			else if(i==Engine.ALG_DELTA_AMPLIFY) {
 				String s = "Delta(Amplify)";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
-				revMap.put(s, c);
+				revMap.put(s, ALG_DELTA_AMPLIFY);
 			}
 			else if(i==Engine.ALG_EDGE) {
 				String s = "Edge";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
-				revMap.put(s, c);
+				revMap.put(s, ALG_EDGE);
 			}
 			else if(i==Engine.ALG_SIMPLIFY_AMPLIFY) {
 				String s = "Simplify(Amplify)";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
-				revMap.put(s, c);
+				revMap.put(s, ALG_SIMPLIFY_AMPLIFY);
 			}
 			
 			c++;
 		}
 		
-		
-		for(int i=0; i<retStr.length; i++) {
-			System.out.println("-> "+retStr[i]);
-		}
-		System.out.println();
-		
+
 		return retStr;
 	}
 
@@ -186,22 +181,21 @@ public class Engine {
 	}
 	
 	public BufferedImage process(int algorithm, ImageFrame img) {
-		
 		if(algorithm==Engine.ALG_AMPLIFY) {
 			biLast = amplifyColor(img).getBum();
-			return biLast;
+			return amplifyColor(img).getBum();
 		}
 		if(algorithm==Engine.ALG_SIMPLIFY_AMPLIFY) {
 			biLast = removeNoise(amplifyColor(img)).getBum();
-			return biLast;
+			return removeNoise(amplifyColor(img)).getBum();
 		}
 		if(algorithm==Engine.ALG_EDGE) {
 			biLast = edgeDetection(img).getBum();
-			return biLast;
+			return edgeDetection(img).getBum();
 		}
 		if(algorithm==Engine.ALG_BLACKWHITE) {
 			biLast = blackAndWhite(img).getBum();
-			return biLast;
+			return blackAndWhite(img).getBum();
 		}
 		
 		return null;
@@ -210,19 +204,19 @@ public class Engine {
 	public BufferedImage process(int algorithm, ImageFrame img1, ImageFrame img2) {
 		if(algorithm==Engine.ALG_DELTA) {
 			biLast = deltaComparison(img1, img2).getBum();
-			return biLast;
+			return deltaComparison(img1, img2).getBum();
 		}
 		else if(algorithm==Engine.ALG_DELTA_AMPLIFY) {
 			biLast = deltaComparison(amplifyColor(img1), amplifyColor(img2)).getBum();
-			return biLast;
+			return deltaComparison(amplifyColor(img1), amplifyColor(img2)).getBum();
 		}
 		else if(algorithm==Engine.ALG_AVG) {
 			biLast = avg(img1, img2).getBum();
-			return biLast;
+			return avg(img1, img2).getBum();
 		}
 		else if(algorithm==Engine.ALG_AVG_SIMPLIFY_AMPLIFY) {
 			biLast = avg(removeNoise( amplifyColor(img1) ), removeNoise( amplifyColor(img2) )).getBum();
-			return biLast;
+			return avg(removeNoise( amplifyColor(img1) ), removeNoise( amplifyColor(img2) )).getBum();
 		}
 		
 		return null;
@@ -429,7 +423,10 @@ public class Engine {
 	 * ----- ALGORITHM 2 ----- Converts image to black and white
 	 * @param if1 the ImageFrame to analyze
 	 */
-	public ImageFrame blackAndWhite(ImageFrame if1) {
+	public ImageFrame blackAndWhite(ImageFrame if1n) {
+		
+		ImageFrame if1 = new ImageFrame(if1n);
+		
 		for (int col = 0; col < if1.getHeight(); col++) {
 			for (int row = 0; row < if1.getWidth(); row++) {
 				int[] color = new int[4];
@@ -589,7 +586,9 @@ public class Engine {
 	 * [3] As long as the differences are totally monochromatic, all differences can be identified.
 	 * @param if1 the ImageFrame to analyze
 	 */
-	public ImageFrame amplifyColor(ImageFrame if1) {
+	public ImageFrame amplifyColor(ImageFrame if1n) {
+		
+		ImageFrame if1 = new ImageFrame(if1n);
 		
 		int rCount = 0;
 		int gCount = 0;

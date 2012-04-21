@@ -1,6 +1,7 @@
 package Models;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
+import java.awt.image.RasterFormatException;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,6 +34,12 @@ public class ImageFrame {
 		
 		rar = bum.getData();
 		
+	}
+	
+	public ImageFrame(ImageFrame newif) {
+		this.location = newif.location;
+		this.rar = newif.rar;
+		this.bum = newif.bum;
 	}
 	
 	public ImageFrame(BufferedImage bum) {

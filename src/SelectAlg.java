@@ -1,12 +1,15 @@
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -46,25 +49,29 @@ public class SelectAlg extends javax.swing.JFrame {
 	private JLabel sources;
 	int boxesChecked = 0;
 	ListModel algMenuModel;
+	int box;
 	
 	ImageFrame img1;
 	ImageFrame img2;
+	GUI gui;
 
 	/**
 	* Auto-generated main method to display this JFrame
 	*/
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				SelectAlg inst = new SelectAlg();
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			public void run() {
+//				SelectAlg inst = new SelectAlg(1, null);
+//				inst.setLocationRelativeTo(null);
+//				inst.setVisible(true);
+//			}
+//		});
+//	}
 	
-	public SelectAlg() {
+	public SelectAlg(int box, GUI gui) {
 		super();
+		this.gui = gui;
+		this.box = box;
 		initGUI();
 	}
 	
@@ -263,14 +270,20 @@ public class SelectAlg extends javax.swing.JFrame {
 		if(s1check.isSelected()) {
 			boxesChecked++;
 			if(img1==null){
-				img1=GUI.ifPic1;
+				img1 = new ImageFrame(gui.ifPic1);
 			}
 			else {
-				img2=GUI.ifPic1;
+				img2 = new ImageFrame(gui.ifPic1);
 			}
 		}
 		else {
 			boxesChecked--;
+			if(img2!=null) {
+				img2=null;
+			}
+			else {
+				img1=null;
+			}
 		}
 		updateCheckBoxes();
 	}
@@ -281,25 +294,105 @@ public class SelectAlg extends javax.swing.JFrame {
 		if(pic2box.isSelected()) {
 			boxesChecked++;
 			if(img1==null){
-				img1=GUI.ifPic2;
+				//img1=gui.ifPic2;
+				img1 = new ImageFrame(gui.ifPic2);
 			}
 			else {
-				img2=GUI.ifPic2;
+				//img2=gui.ifPic2;
+				img2 = new ImageFrame(gui.ifPic2);
 			}
 		}
 		else {
 			boxesChecked--;
+			if(img2!=null) {
+				img2=null;
+			}
+			else {
+				img1=null;
+			}
 		}
 		updateCheckBoxes();
 	}
 	
 	private void okayButActionPerformed(ActionEvent evt) {
-		this.setVisible(false);
-		//System.out.println("--- " + algMenu.getSelectedValue());
+		System.out.println("--- " + algMenu.getSelectedValue());
+		
+		BufferedImage biOut = null;
+		
+		System.out.println(Engine.getInstance().revMap.toString());
+		
 		if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_AMPLIFY){
-			Engine.getInstance().process(Engine.ALG_AMPLIFY, img1);
+			System.out.println("--- amplifying");
+			if(img1!=null) {
+				biOut = Engine.getInstance().process(Engine.ALG_AMPLIFY, img1); 
+				System.out.println("img1 processed: "+biOut);
+			}
+			else {
+				biOut = Engine.getInstance().process(Engine.ALG_AMPLIFY, img2);
+				System.out.println("img2 processed: "+biOut);
+			}
 		}
-		//TODO add your code for okayBut.actionPerformed
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_AVG){
+			biOut = Engine.getInstance().process(Engine.ALG_AVG, img1, img2);
+		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_AVG_SIMPLIFY_AMPLIFY){
+			biOut = Engine.getInstance().process(Engine.ALG_AVG_SIMPLIFY_AMPLIFY, img1, img2);
+		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_BLACKWHITE){
+			System.out.println("--- black and white");
+			if(img1!=null) {
+				biOut = Engine.getInstance().process(Engine.ALG_BLACKWHITE, img1);
+				System.out.println("img1 processed: "+biOut);
+			}
+			else {
+				biOut = Engine.getInstance().process(Engine.ALG_BLACKWHITE, img2);
+				System.out.println("img2 processed: "+biOut);
+			}
+		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_DELTA){
+				biOut = Engine.getInstance().process(Engine.ALG_DELTA, img1, img2);
+		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_DELTA_AMPLIFY){
+				biOut = Engine.getInstance().process(Engine.ALG_DELTA_AMPLIFY, img1, img2);
+		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_EDGE){
+			if(img1!=null)
+				biOut = Engine.getInstance().process(Engine.ALG_EDGE, img1);
+			else
+				biOut = Engine.getInstance().process(Engine.ALG_EDGE, img2);
+		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_SIMPLIFY_AMPLIFY){
+			if(img1!=null)
+				biOut = Engine.getInstance().process(Engine.ALG_SIMPLIFY_AMPLIFY, img1);
+			else
+				biOut = Engine.getInstance().process(Engine.ALG_SIMPLIFY_AMPLIFY, img2);
+		}
+		
+		
+		
+		if(box==1) {
+			gui.a1.setIcon(new ImageIcon(biOut.getScaledInstance(185, 228, Image.SCALE_SMOOTH)));
+			gui.ifPic3 = new ImageFrame(biOut);
+		}
+		else if(box==2) {
+			gui.a2.setIcon(new ImageIcon(biOut.getScaledInstance(185, 228, Image.SCALE_SMOOTH)));
+			gui.ifPic4 = new ImageFrame(biOut);
+		}
+		else if(box==3) {
+			gui.a3.setIcon(new ImageIcon(biOut.getScaledInstance(185, 228, Image.SCALE_SMOOTH)));
+			gui.ifPic5 = new ImageFrame(biOut);
+		}
+		else if(box==4) {
+			gui.a4.setIcon(new ImageIcon(biOut.getScaledInstance(185, 228, Image.SCALE_SMOOTH)));
+			gui.ifPic6 = new ImageFrame(biOut);
+		}
+
+		img1 = null;
+		img2 = null;
+		
+		
+		this.setVisible(false);
+
 	}
 	
 	public void updateCheckBoxes() {
@@ -346,14 +439,22 @@ public class SelectAlg extends javax.swing.JFrame {
 		if(ja1.isSelected()) {
 			boxesChecked++;
 			if(img1==null){
-				img1=GUI.ifPic3;
+				//img1=gui.ifPic3;
+				img1 = new ImageFrame(gui.ifPic3);
 			}
 			else {
-				img2=GUI.ifPic3;
+				//img2=gui.ifPic3;
+				img2 = new ImageFrame(gui.ifPic3);
 			}
 		}
 		else {
 			boxesChecked--;
+			if(img2!=null) {
+				img2=null;
+			}
+			else {
+				img1=null;
+			}
 		}
 		updateCheckBoxes();
 	}
@@ -364,14 +465,22 @@ public class SelectAlg extends javax.swing.JFrame {
 		if(ja2.isSelected()) {
 			boxesChecked++;
 			if(img1==null){
-				img1=GUI.ifPic4;
+				//img1=gui.ifPic4;
+				img1 = new ImageFrame(gui.ifPic4);
 			}
 			else {
-				img2=GUI.ifPic4;
+				//img2=gui.ifPic4;
+				img2 = new ImageFrame(gui.ifPic4);
 			}
 		}
 		else {
 			boxesChecked--;
+			if(img2!=null) {
+				img2=null;
+			}
+			else {
+				img1=null;
+			}
 		}
 		updateCheckBoxes();
 	}
@@ -382,14 +491,22 @@ public class SelectAlg extends javax.swing.JFrame {
 		if(ja3.isSelected()) {
 			boxesChecked++;
 			if(img1==null){
-				img1=GUI.ifPic5;
+				//img1=gui.ifPic5;
+				img1 = new ImageFrame(gui.ifPic5);
 			}
 			else {
-				img2=GUI.ifPic5;
+				//img2=gui.ifPic5;
+				img2 = new ImageFrame(gui.ifPic5);
 			}
 		}
 		else {
 			boxesChecked--;
+			if(img2!=null) {
+				img2=null;
+			}
+			else {
+				img1=null;
+			}
 		}
 		updateCheckBoxes();
 	}
@@ -400,14 +517,22 @@ public class SelectAlg extends javax.swing.JFrame {
 		if(ja4.isSelected()) {
 			boxesChecked++;
 			if(img1==null){
-				img1=GUI.ifPic6;
+				//img1=gui.ifPic6;
+				img1 = new ImageFrame(gui.ifPic6);
 			}
 			else {
-				img2=GUI.ifPic6;
+				//img2=gui.ifPic6;
+				img2 = new ImageFrame(gui.ifPic6);
 			}
 		}
 		else {
 			boxesChecked--;
+			if(img2!=null) {
+				img2=null;
+			}
+			else {
+				img1=null;
+			}
 		}
 		updateCheckBoxes();
 	}

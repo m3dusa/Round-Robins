@@ -30,27 +30,27 @@ import Models.ImageFrame;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class GUI extends javax.swing.JFrame {
-	private JButton pic1;
+	public JButton pic1;
 	private JLabel a3La;
 	private JLabel a4La;
 	private JLabel a2La;
 	private JLabel a1La;
 	private JLabel pic2La;
 	private JLabel jLabel1;
-	private JButton a4;
-	private JButton a3;
-	private JButton a2;
-	private JButton a1;
-	private JButton pic2;
+	public JButton a4;
+	public JButton a3;
+	public JButton a2;
+	public JButton a1;
+	public JButton pic2;
 	private JButton diff;
-	public SelectAlg alg;
+	
 
-	public static ImageFrame ifPic1 = null;
-	public static ImageFrame ifPic2 = null;
-	public static ImageFrame ifPic3 = null;
-	public static ImageFrame ifPic4 = null;
-	public static ImageFrame ifPic5 = null;
-	public static ImageFrame ifPic6 = null;
+	public ImageFrame ifPic1 = null;
+	public ImageFrame ifPic2 = null;
+	public ImageFrame ifPic3 = null;
+	public ImageFrame ifPic4 = null;
+	public ImageFrame ifPic5 = null;
+	public ImageFrame ifPic6 = null;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -309,26 +309,26 @@ public class GUI extends javax.swing.JFrame {
 	
 	public void updateMiddle() {
 		Engine.getInstance().findDiff(ifPic1, ifPic2);
-		diff.setIcon(new ImageIcon(Engine.getInstance().biFin));
+		diff.setIcon(new ImageIcon(Engine.getInstance().biFin.getScaledInstance(250, 285, Image.SCALE_SMOOTH)));
 	}
 	
 	private void a1ActionPerformed(ActionEvent evt) {
-		alg = new SelectAlg(this);
+		SelectAlg alg = new SelectAlg(1, this);
 		alg.setVisible(true);
 	}
 	
 	private void a2ActionPerformed(ActionEvent evt) {
-		alg = new SelectAlg(this);
+		SelectAlg alg = new SelectAlg(2, this);
 		alg.setVisible(true);
 	}
 	
 	private void a3ActionPerformed(ActionEvent evt) {
-		alg = new SelectAlg(this);
+		SelectAlg alg = new SelectAlg(3, this);
 		alg.setVisible(true);
 	}
 	
 	private void a4ActionPerformed(ActionEvent evt) {
-		alg = new SelectAlg(this);
+		SelectAlg alg = new SelectAlg(4, this);
 		alg.setVisible(true);
 	}
 
