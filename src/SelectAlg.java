@@ -117,6 +117,11 @@ public class SelectAlg extends javax.swing.JFrame {
 						s1checkItemStateChanged(evt);
 					}
 				});
+							s1check.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent evt) {
+									s1checkActionPerformed(evt);
+								}
+							});
 			}
 			{
 				pic2box = new JCheckBox();
@@ -207,11 +212,17 @@ public class SelectAlg extends javax.swing.JFrame {
 	}
 	
 	private void s1checkActionPerformed(ActionEvent evt) {
+		if (s1check.isSelected() == true && pic2box.isSelected() == true){
+			System.out.println("s1 and s2!!!!!!!!");
+		}
 		System.out.println("s1check.actionPerformed, event="+evt);
 		//TODO add your code for s1check.actionPerformed
 	}
 	
 	private void pic2boxActionPerformed(ActionEvent evt) {
+		if (s1check.isSelected() == true && pic2box.isSelected() == true){
+			System.out.println("s1 and s2!!!!!!!!");
+		}
 		System.out.println("pic2box.actionPerformed, event="+evt);
 		//TODO add your code for pic2box.actionPerformed
 	}
