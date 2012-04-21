@@ -297,6 +297,7 @@ public class SelectAlg extends javax.swing.JFrame {
 				
 				if(Engine.getInstance().strMap.get(elemStr)!=1) {
 					((DefaultComboBoxModel)algMenuModel).removeElementAt(i);
+					i--;
 				}
 			}
 		}
