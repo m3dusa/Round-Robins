@@ -71,7 +71,7 @@ public class SelectAlg extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			{
 				
-				algMenuModel = new DefaultComboBoxModel(Engine.getInstance().getAlgoStrings());
+				algMenuModel = new DefaultComboBoxModel(); // Engine.getInstance().getAlgoStrings()
 				algMenu = new JList();
 				GridLayout algLaLayout = new GridLayout(1, 1);
 				algLaLayout.setColumns(1);
@@ -234,29 +234,46 @@ public class SelectAlg extends javax.swing.JFrame {
 	}
 	
 	private void s1checkActionPerformed(ActionEvent evt) {
+		/*
 		if (s1check.isSelected() == true && pic2box.isSelected() == true){
 			System.out.println("s1 and s2!!!!!!!!");
 		}
 		System.out.println("s1check.actionPerformed, event="+evt);
+		*/
 		//TODO add your code for s1check.actionPerformed
 	}
 	
 	private void pic2boxActionPerformed(ActionEvent evt) {
+		/*
 		if (s1check.isSelected() == true && pic2box.isSelected() == true){
 			System.out.println("s1 and s2!!!!!!!!");
 		}
 		System.out.println("pic2box.actionPerformed, event="+evt);
+		*/
 		//TODO add your code for pic2box.actionPerformed
 	}
 	
 	private void s1checkItemStateChanged(ItemEvent evt) {
 		System.out.println("s1check.itemStateChanged, event="+evt);
 		//TODO add your code for s1check.itemStateChanged
+		if(s1check.isSelected()) {
+			boxesChecked++;
+		}
+		else {
+			boxesChecked--;
+		}
+		updateCheckBoxes();
 	}
 	
 	private void pic2boxItemStateChanged(ItemEvent evt) {
 		System.out.println("pic2box.itemStateChanged, event="+evt);
 		//TODO add your code for pic2box.itemStateChanged
+		if(pic2box.isSelected()) {
+			boxesChecked++;
+		}
+		else {
+			boxesChecked--;
+		}
 		updateCheckBoxes();
 	}
 	
@@ -295,6 +312,7 @@ public class SelectAlg extends javax.swing.JFrame {
 				
 				if(Engine.getInstance().strMap.get(elemStr)!=2) {
 					((DefaultComboBoxModel)algMenuModel).removeElementAt(i);
+					i--;
 				}
 			}
 		}
@@ -303,21 +321,50 @@ public class SelectAlg extends javax.swing.JFrame {
 	private void ja1ItemStateChanged(ItemEvent evt) {
 		System.out.println("ja1.itemStateChanged, event="+evt);
 		//TODO add your code for ja1.itemStateChanged
+		
+		if(ja1.isSelected()) {
+			boxesChecked++;
+		}
+		else {
+			boxesChecked--;
+		}
+		updateCheckBoxes();
 	}
 	
 	private void ja2ItemStateChanged(ItemEvent evt) {
 		System.out.println("ja2.itemStateChanged, event="+evt);
 		//TODO add your code for ja2.itemStateChanged
+		if(ja2.isSelected()) {
+			boxesChecked++;
+		}
+		else {
+			boxesChecked--;
+		}
+		updateCheckBoxes();
 	}
 	
 	private void ja3ItemStateChanged(ItemEvent evt) {
 		System.out.println("ja3.itemStateChanged, event="+evt);
 		//TODO add your code for ja3.itemStateChanged
+		if(ja3.isSelected()) {
+			boxesChecked++;
+		}
+		else {
+			boxesChecked--;
+		}
+		updateCheckBoxes();
 	}
 	
 	private void ja4ItemStateChanged(ItemEvent evt) {
 		System.out.println("ja4.itemStateChanged, event="+evt);
 		//TODO add your code for ja4.itemStateChanged
+		if(ja4.isSelected()) {
+			boxesChecked++;
+		}
+		else {
+			boxesChecked--;
+		}
+		updateCheckBoxes();
 	}
 
 }

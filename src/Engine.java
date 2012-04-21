@@ -38,7 +38,7 @@ public class Engine {
 	static int ALG_DELTA = 0;
 	static int ALG_DELTA_AMPLIFY = 6;
 	static int ALG_AVG = 9;
-	static int ALG_ADD_SIMPLIFY_AMPLIFY = 10;
+	static int ALG_AVG_SIMPLIFY_AMPLIFY = 10;
 	static int ALG_SIMPLIFY_AMPLIFY = 11;
 	static int ALG_BLACKWHITE = 2;
 	
@@ -56,7 +56,7 @@ public class Engine {
 		algorithmMap.put(Engine.ALG_DELTA, 2);
 		algorithmMap.put(Engine.ALG_DELTA_AMPLIFY, 2);
 		algorithmMap.put(Engine.ALG_AVG, 2);
-		algorithmMap.put(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, 2);
+		algorithmMap.put(Engine.ALG_AVG_SIMPLIFY_AMPLIFY, 2);
 		algorithmMap.put(Engine.ALG_SIMPLIFY_AMPLIFY, 1);
 		algorithmMap.put(Engine.ALG_BLACKWHITE, 1);
 	}
@@ -72,8 +72,8 @@ public class Engine {
 		
 		int c = 0;
 		for(Integer i : algorithmMap.keySet()) {
-			if(i==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
-				String s = "Add(Simplify(Amplify))";
+			if(i==Engine.ALG_AVG_SIMPLIFY_AMPLIFY) {
+				String s = "Avg(Simplify(Amplify))";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
 			}
@@ -168,7 +168,7 @@ public class Engine {
 	}
 	
 	public void findDiff(ImageFrame if1, ImageFrame if2) {
-		biFin = process(Engine.ALG_ADD_SIMPLIFY_AMPLIFY, if1, if2);
+		biFin = process(Engine.ALG_AVG_SIMPLIFY_AMPLIFY, if1, if2);
 //		biFin = process(Engine.ALG_SIMPLIFY_AMPLIFY, if2);
 //		biFin = process(Engine.ALG_AVG, if1, if2);
 		saveImage();
@@ -209,7 +209,7 @@ public class Engine {
 			biLast = avg(img1, img2).getBum();
 			return biLast;
 		}
-		else if(algorithm==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
+		else if(algorithm==Engine.ALG_AVG_SIMPLIFY_AMPLIFY) {
 			biLast = avg(removeNoise( amplifyColor(img1) ), removeNoise( amplifyColor(img2) )).getBum();
 			return biLast;
 		}
