@@ -71,6 +71,7 @@ public class Engine {
 		String retStr[] = new String[algorithmMap.size()];
 		
 		strMap = new HashMap<String, Integer>();
+		revMap = new HashMap<String, Integer>();
 		
 		int c = 0;
 		for(Integer i : algorithmMap.keySet()) {

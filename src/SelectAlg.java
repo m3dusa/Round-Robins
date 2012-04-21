@@ -18,6 +18,8 @@ import javax.swing.ListModel;
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
 
+import Models.ImageFrame;
+
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -44,6 +46,9 @@ public class SelectAlg extends javax.swing.JFrame {
 	private JLabel sources;
 	int boxesChecked = 0;
 	ListModel algMenuModel;
+	
+	ImageFrame img1;
+	ImageFrame img2;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -257,6 +262,12 @@ public class SelectAlg extends javax.swing.JFrame {
 		//TODO add your code for s1check.itemStateChanged
 		if(s1check.isSelected()) {
 			boxesChecked++;
+			if(img1==null){
+				img1=GUI.ifPic1;
+			}
+			else {
+				img2=GUI.ifPic1;
+			}
 		}
 		else {
 			boxesChecked--;
@@ -269,6 +280,12 @@ public class SelectAlg extends javax.swing.JFrame {
 		//TODO add your code for pic2box.itemStateChanged
 		if(pic2box.isSelected()) {
 			boxesChecked++;
+			if(img1==null){
+				img1=GUI.ifPic2;
+			}
+			else {
+				img2=GUI.ifPic2;
+			}
 		}
 		else {
 			boxesChecked--;
@@ -278,9 +295,10 @@ public class SelectAlg extends javax.swing.JFrame {
 	
 	private void okayButActionPerformed(ActionEvent evt) {
 		this.setVisible(false);
-		//if (algMenuModel.getElementAt(algMenu.getSelectedIndex()) == Engine.ALG_AMPLIFY){
-		//Engine.getInstance().process(algorithm, img);
-		//}
+		//System.out.println("--- " + algMenu.getSelectedValue());
+		if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_AMPLIFY){
+			Engine.getInstance().process(Engine.ALG_AMPLIFY, img1);
+		}
 		//TODO add your code for okayBut.actionPerformed
 	}
 	
@@ -327,6 +345,12 @@ public class SelectAlg extends javax.swing.JFrame {
 		
 		if(ja1.isSelected()) {
 			boxesChecked++;
+			if(img1==null){
+				img1=GUI.ifPic3;
+			}
+			else {
+				img2=GUI.ifPic3;
+			}
 		}
 		else {
 			boxesChecked--;
@@ -339,6 +363,12 @@ public class SelectAlg extends javax.swing.JFrame {
 		//TODO add your code for ja2.itemStateChanged
 		if(ja2.isSelected()) {
 			boxesChecked++;
+			if(img1==null){
+				img1=GUI.ifPic4;
+			}
+			else {
+				img2=GUI.ifPic4;
+			}
 		}
 		else {
 			boxesChecked--;
@@ -351,6 +381,12 @@ public class SelectAlg extends javax.swing.JFrame {
 		//TODO add your code for ja3.itemStateChanged
 		if(ja3.isSelected()) {
 			boxesChecked++;
+			if(img1==null){
+				img1=GUI.ifPic5;
+			}
+			else {
+				img2=GUI.ifPic5;
+			}
 		}
 		else {
 			boxesChecked--;
@@ -363,6 +399,12 @@ public class SelectAlg extends javax.swing.JFrame {
 		//TODO add your code for ja4.itemStateChanged
 		if(ja4.isSelected()) {
 			boxesChecked++;
+			if(img1==null){
+				img1=GUI.ifPic6;
+			}
+			else {
+				img2=GUI.ifPic6;
+			}
 		}
 		else {
 			boxesChecked--;

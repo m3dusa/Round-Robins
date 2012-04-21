@@ -45,8 +45,12 @@ public class GUI extends javax.swing.JFrame {
 	private JButton diff;
 	public SelectAlg alg;
 
-	private ImageFrame ifPic1 = null;
-	private ImageFrame ifPic2 = null;
+	public static ImageFrame ifPic1 = null;
+	public static ImageFrame ifPic2 = null;
+	public static ImageFrame ifPic3 = null;
+	public static ImageFrame ifPic4 = null;
+	public static ImageFrame ifPic5 = null;
+	public static ImageFrame ifPic6 = null;
 
 	/**
 	* Auto-generated main method to display this JFrame
