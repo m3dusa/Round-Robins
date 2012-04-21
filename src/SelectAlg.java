@@ -1,4 +1,8 @@
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -29,6 +33,10 @@ public class SelectAlg extends javax.swing.JFrame {
 	private JList algMenu;
 	private JButton okayBut;
 	private JCheckBox s1check;
+	private JCheckBox ja4;
+	private JCheckBox ja3;
+	private JCheckBox ja2;
+	private JCheckBox ja1;
 	private JCheckBox pic2box;
 	private JLabel algLa;
 	private JLabel sources;
@@ -74,6 +82,22 @@ public class SelectAlg extends javax.swing.JFrame {
 				okayBut.setLayout(null);
 			}
 			{
+				ja1 = new JCheckBox();
+				ja1.setText("a1");
+			}
+			{
+				ja2 = new JCheckBox();
+				ja2.setText("a2");
+			}
+			{
+				ja3 = new JCheckBox();
+				ja3.setText("a3");
+			}
+			{
+				ja4 = new JCheckBox();
+				ja4.setText("a4");
+			}
+			{
 				s1check = new JCheckBox();
 				GridLayout pic2boxLayout = new GridLayout(1, 1);
 				pic2boxLayout.setColumns(1);
@@ -81,11 +105,26 @@ public class SelectAlg extends javax.swing.JFrame {
 				pic2boxLayout.setVgap(5);
 				s1check.setText("Picture1");
 				s1check.setLayout(null);
+				s1check.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						s1checkItemStateChanged(evt);
+					}
+				});
 			}
 			{
 				pic2box = new JCheckBox();
 				pic2box.setText("Picture2");
 				pic2box.setLayout(null);
+				pic2box.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						pic2boxItemStateChanged(evt);
+					}
+				});
+								pic2box.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent evt) {
+										pic2boxActionPerformed(evt);
+									}
+								});
 			}
 			{
 				sources = new JLabel();
@@ -103,41 +142,81 @@ public class SelectAlg extends javax.swing.JFrame {
 				    .addComponent(sources, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(pic2box, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				    .addComponent(ja1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(ja4, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(ja3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(ja2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				.addComponent(algLa, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(algMenu, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
+				.addComponent(algMenu, 0, 166, Short.MAX_VALUE)
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(okayBut, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addGap(0, 7, Short.MAX_VALUE));
+				.addComponent(okayBut, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addGap(7)
 				.addGroup(thisLayout.createParallelGroup()
-				    .addGroup(thisLayout.createSequentialGroup()
+				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				        .addGroup(thisLayout.createParallelGroup()
-				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                .addComponent(sources, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-				                .addGap(38)
-				                .addComponent(s1check, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))
+				            .addGroup(thisLayout.createSequentialGroup()
+				                .addGroup(thisLayout.createParallelGroup()
+				                    .addComponent(sources, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+				                    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                        .addComponent(ja1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+				                        .addGap(20)))
+				                .addGap(39)
+				                .addGroup(thisLayout.createParallelGroup()
+				                    .addComponent(s1check, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+				                    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                        .addComponent(ja2, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
+				                        .addGap(41))))
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(algLa, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
-				                .addGap(62)))
-				        .addGap(69)
+				                .addGap(63)))
+				        .addGap(0, 19, Short.MAX_VALUE)
+				        .addComponent(ja3, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
 				        .addGroup(thisLayout.createParallelGroup()
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(pic2box, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 33, Short.MAX_VALUE))
-				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				                .addGap(0, 55, Short.MAX_VALUE)
-				                .addComponent(okayBut, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))))
+				                .addGap(34))
+				            .addGroup(thisLayout.createSequentialGroup()
+				                .addGap(44)
+				                .addGroup(thisLayout.createParallelGroup()
+				                    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                        .addComponent(ja4, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+				                        .addGap(34))
+				                    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                        .addPreferredGap(ja4, okayBut, LayoutStyle.ComponentPlacement.INDENT)
+				                        .addComponent(okayBut, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))))))
 				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
-				        .addComponent(algMenu, GroupLayout.PREFERRED_SIZE, 378, GroupLayout.PREFERRED_SIZE)
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 0, Short.MAX_VALUE))));
+				        .addComponent(algMenu, GroupLayout.PREFERRED_SIZE, 377, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 6, Short.MAX_VALUE))));
 			pack();
 			setSize(400, 300);
 		} catch (Exception e) {
 		    //add your error handling code here
 			e.printStackTrace();
 		}
+	}
+	
+	private void s1checkActionPerformed(ActionEvent evt) {
+		System.out.println("s1check.actionPerformed, event="+evt);
+		//TODO add your code for s1check.actionPerformed
+	}
+	
+	private void pic2boxActionPerformed(ActionEvent evt) {
+		System.out.println("pic2box.actionPerformed, event="+evt);
+		//TODO add your code for pic2box.actionPerformed
+	}
+	
+	private void s1checkItemStateChanged(ItemEvent evt) {
+		System.out.println("s1check.itemStateChanged, event="+evt);
+		//TODO add your code for s1check.itemStateChanged
+	}
+	
+	private void pic2boxItemStateChanged(ItemEvent evt) {
+		System.out.println("pic2box.itemStateChanged, event="+evt);
+		//TODO add your code for pic2box.itemStateChanged
 	}
 
 }
