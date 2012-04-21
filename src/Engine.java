@@ -40,7 +40,7 @@ public class Engine {
 	static int ALG_AVG = 9;
 	static int ALG_ADD_SIMPLIFY_AMPLIFY = 10;
 	static int ALG_SIMPLIFY_AMPLIFY = 11;
-	static int ALG_BLACKWHITE = 11;
+	static int ALG_BLACKWHITE = 2;
 	
 	// alg -> arguments
 	HashMap<Integer, Integer> algorithmMap = new HashMap<Integer, Integer>();
@@ -61,6 +61,39 @@ public class Engine {
 	
 	public HashMap<Integer, Integer> getAlgoMap() {
 		return algorithmMap;
+	}
+	
+	public String[] getAlgoStrings() {
+		String retStr[] = new String[algorithmMap.size()];
+		
+		for(Integer i : algorithmMap.keySet()) {
+			if(i==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
+				retStr[i] = "Add(Simplify(Amplify))";
+			}
+			else if(i==Engine.ALG_AMPLIFY) {
+				retStr[i] = "Amplify";
+			}
+			else if(i==Engine.ALG_AVG) {
+				retStr[i] = "Average";
+			}
+			else if(i==Engine.ALG_BLACKWHITE) {
+				retStr[i] = "Black and White";
+			}
+			else if(i==Engine.ALG_DELTA) {
+				retStr[i] = "Delta";
+			}
+			else if(i==Engine.ALG_DELTA_AMPLIFY) {
+				retStr[i] = "Delta(Amplify)";
+			}
+			else if(i==Engine.ALG_EDGE) {
+				retStr[i] = "Edge";
+			}
+			else if(i==Engine.ALG_SIMPLIFY_AMPLIFY) {
+				retStr[i] = "Simplify(Amplify)";
+			}
+		}
+		
+		return retStr;
 	}
 
 	/**
@@ -522,6 +555,7 @@ public class Engine {
 		int gCount = 0;
 		int bCount = 0;
 		
+		
 		for (int col = 1; col < if1.getHeight()-1; col++) {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
 				int[] color = new int[4];
@@ -537,7 +571,7 @@ public class Engine {
 				//System.out.println();
 				
 				if(alpha==0) {
-					System.out.println("("+row+","+col+")="+alpha);
+					//System.out.println("("+row+","+col+")="+alpha);
 					continue;
 				}
 				

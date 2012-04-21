@@ -305,7 +305,7 @@ public class GUI extends javax.swing.JFrame {
 	
 	public void updateMiddle() {
 		Engine.getInstance().findDiff(ifPic1, ifPic2);
-		
+		diff.setIcon(new ImageIcon(Engine.getInstance().biFin));
 	}
 	
 	private void a1ActionPerformed(ActionEvent evt) {
