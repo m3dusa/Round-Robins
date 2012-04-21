@@ -46,6 +46,8 @@ public class Engine {
 	HashMap<Integer, Integer> algorithmMap = new HashMap<Integer, Integer>();
 	
 	HashMap<String, Integer> strMap;
+	
+	HashMap<String, Integer> revMap;
 
 	/**
 	 * Constructor
@@ -76,41 +78,49 @@ public class Engine {
 				String s = "Avg(Simplify(Amplify))";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, c);
 			}
 			else if(i==Engine.ALG_AMPLIFY) {
 				String s = "Amplify";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, c);
 			}
 			else if(i==Engine.ALG_AVG) {
 				String s = "Average";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, c);
 			}
 			else if(i==Engine.ALG_BLACKWHITE) {
 				String s = "Black and White";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, c);
 			}
 			else if(i==Engine.ALG_DELTA) {
 				String s = "Delta";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, c);
 			}
 			else if(i==Engine.ALG_DELTA_AMPLIFY) {
 				String s = "Delta(Amplify)";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, c);
 			}
 			else if(i==Engine.ALG_EDGE) {
 				String s = "Edge";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, c);
 			}
 			else if(i==Engine.ALG_SIMPLIFY_AMPLIFY) {
 				String s = "Simplify(Amplify)";
 				retStr[c] = s;
 				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, c);
 			}
 			
 			c++;

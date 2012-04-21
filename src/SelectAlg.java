@@ -70,7 +70,6 @@ public class SelectAlg extends javax.swing.JFrame {
 			//HashMap<Integer, Integer> myMap = Engine.getInstance().algorithmMap;
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			{
-				
 				algMenuModel = new DefaultComboBoxModel(); // Engine.getInstance().getAlgoStrings()
 				algMenu = new JList();
 				GridLayout algLaLayout = new GridLayout(1, 1);
