@@ -89,7 +89,7 @@ public class GUI extends javax.swing.JFrame {
 				pic2LaLayout.setColumns(1);
 				pic2LaLayout.setHgap(5);
 				pic2LaLayout.setVgap(5);
-				jLabel1.setText("Picuture1:");
+				jLabel1.setText("Picture1:");
 				jLabel1.setLayout(null);
 			}
 			{
