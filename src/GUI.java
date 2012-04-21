@@ -43,12 +43,10 @@ public class GUI extends javax.swing.JFrame {
 	private JButton a1;
 	private JButton pic2;
 	private JButton diff;
-<<<<<<< HEAD
 	public SelectAlg alg;
-=======
+
 	private ImageFrame ifPic1 = null;
 	private ImageFrame ifPic2 = null;
->>>>>>> c2c2eb0cbeef904c32623d1b2c7b621e21849cc0
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -259,10 +257,10 @@ public class GUI extends javax.swing.JFrame {
 			Image image = imgIc1.getImage().getScaledInstance(250, 285, Image.SCALE_SMOOTH);
 			imgIc1.setImage(image);
 			pic1.setIcon(imgIc1);
-<<<<<<< HEAD
+
 			ImageFrame newImgFrame = new ImageFrame(path);
 			Engine.getInstance().addImage(newImgFrame);
-=======
+
 
 			ifPic1 = new ImageFrame(path);
 			Engine.getInstance().addImage(ifPic1);
@@ -275,7 +273,6 @@ public class GUI extends javax.swing.JFrame {
 			else {
 				System.out.println("pic2 is null");
 			}
->>>>>>> c2c2eb0cbeef904c32623d1b2c7b621e21849cc0
 		}
 	}
 	
