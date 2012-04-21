@@ -42,6 +42,8 @@ public class SelectAlg extends javax.swing.JFrame {
 	private JCheckBox pic2box;
 	private JLabel algLa;
 	private JLabel sources;
+	int boxesChecked = 0;
+	ListModel algMenuModel;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -69,7 +71,7 @@ public class SelectAlg extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			{
 				
-				ListModel algMenuModel = new DefaultComboBoxModel(Engine.getInstance().getAlgoStrings());
+				algMenuModel = new DefaultComboBoxModel(Engine.getInstance().getAlgoStrings());
 				algMenu = new JList();
 				GridLayout algLaLayout = new GridLayout(1, 1);
 				algLaLayout.setColumns(1);
@@ -224,11 +226,47 @@ public class SelectAlg extends javax.swing.JFrame {
 	private void pic2boxItemStateChanged(ItemEvent evt) {
 		System.out.println("pic2box.itemStateChanged, event="+evt);
 		//TODO add your code for pic2box.itemStateChanged
+		updateCheckBoxes();
 	}
 	
 	private void okayButActionPerformed(ActionEvent evt) {
 		this.setVisible(false);
 		//TODO add your code for okayBut.actionPerformed
+	}
+	
+	public void updateCheckBoxes() {
+		((DefaultComboBoxModel)algMenuModel).removeAllElements();
+		
+		if(boxesChecked==1) {
+			
+			for(int i=0; i<Engine.getInstance().getAlgoStrings().length; i++) {
+				((DefaultComboBoxModel)algMenuModel).addElement(Engine.getInstance().getAlgoStrings()[i]);
+			}
+			
+			for(int i=0; i<algMenuModel.getSize(); i++) {
+				//System.out.println("elem: "+algMenuModel.getElementAt(i));
+				String elemStr = algMenuModel.getElementAt(i).toString();
+				
+				if(Engine.getInstance().strMap.get(elemStr)!=1) {
+					((DefaultComboBoxModel)algMenuModel).removeElementAt(i);
+				}
+			}
+		}
+		else if(boxesChecked==2) {
+			
+			for(int i=0; i<Engine.getInstance().getAlgoStrings().length; i++) {
+				((DefaultComboBoxModel)algMenuModel).addElement(Engine.getInstance().getAlgoStrings()[i]);
+			}
+			
+			for(int i=0; i<algMenuModel.getSize(); i++) {
+				//System.out.println("elem: "+algMenuModel.getElementAt(i));
+				String elemStr = algMenuModel.getElementAt(i).toString();
+				
+				if(Engine.getInstance().strMap.get(elemStr)!=2) {
+					((DefaultComboBoxModel)algMenuModel).removeElementAt(i);
+				}
+			}
+		}
 	}
 
 }

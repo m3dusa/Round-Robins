@@ -75,42 +75,42 @@ public class Engine {
 			if(i==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
 				String s = "Add(Simplify(Amplify))";
 				retStr[c] = s;
-				strMap.put(s, c);
+				strMap.put(s, algorithmMap.get(i));
 			}
 			else if(i==Engine.ALG_AMPLIFY) {
 				String s = "Amplify";
 				retStr[c] = s;
-				strMap.put(s, c);
+				strMap.put(s, algorithmMap.get(i));
 			}
 			else if(i==Engine.ALG_AVG) {
 				String s = "Average";
 				retStr[c] = s;
-				strMap.put(s, c);
+				strMap.put(s, algorithmMap.get(i));
 			}
 			else if(i==Engine.ALG_BLACKWHITE) {
 				String s = "Black and White";
 				retStr[c] = s;
-				strMap.put(s, c);
+				strMap.put(s, algorithmMap.get(i));
 			}
 			else if(i==Engine.ALG_DELTA) {
 				String s = "Delta";
 				retStr[c] = s;
-				strMap.put(s, c);
+				strMap.put(s, algorithmMap.get(i));
 			}
 			else if(i==Engine.ALG_DELTA_AMPLIFY) {
 				String s = "Delta(Amplify)";
 				retStr[c] = s;
-				strMap.put(s, c);
+				strMap.put(s, algorithmMap.get(i));
 			}
 			else if(i==Engine.ALG_EDGE) {
 				String s = "Edge";
 				retStr[c] = s;
-				strMap.put(s, c);
+				strMap.put(s, algorithmMap.get(i));
 			}
 			else if(i==Engine.ALG_SIMPLIFY_AMPLIFY) {
 				String s = "Simplify(Amplify)";
 				retStr[c] = s;
-				strMap.put(s, c);
+				strMap.put(s, algorithmMap.get(i));
 			}
 			
 			c++;
