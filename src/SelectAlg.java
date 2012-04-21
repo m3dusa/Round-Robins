@@ -279,6 +279,9 @@ public class SelectAlg extends javax.swing.JFrame {
 	
 	private void okayButActionPerformed(ActionEvent evt) {
 		this.setVisible(false);
+		//if (algMenuModel.getElementAt(algMenu.getSelectedIndex()) == Engine.ALG_AMPLIFY){
+		//Engine.getInstance().process(algorithm, img);
+		//}
 		//TODO add your code for okayBut.actionPerformed
 	}
 	
