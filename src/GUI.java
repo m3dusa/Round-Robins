@@ -313,22 +313,22 @@ public class GUI extends javax.swing.JFrame {
 	}
 	
 	private void a1ActionPerformed(ActionEvent evt) {
-		alg = new SelectAlg();
+		alg = new SelectAlg(this);
 		alg.setVisible(true);
 	}
 	
 	private void a2ActionPerformed(ActionEvent evt) {
-		alg = new SelectAlg();
+		alg = new SelectAlg(this);
 		alg.setVisible(true);
 	}
 	
 	private void a3ActionPerformed(ActionEvent evt) {
-		alg = new SelectAlg();
+		alg = new SelectAlg(this);
 		alg.setVisible(true);
 	}
 	
 	private void a4ActionPerformed(ActionEvent evt) {
-		alg = new SelectAlg();
+		alg = new SelectAlg(this);
 		alg.setVisible(true);
 	}
 
