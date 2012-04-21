@@ -131,7 +131,7 @@ public class ImageTest extends JFrame {
 	 * event dispatch thread.
 	 */
 	private static void createAndShowGUI() {
-		
+		/*
 		ImageTest frame = new ImageTest("GUI");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.addComponentsToPane(frame.getContentPane());
@@ -141,7 +141,7 @@ public class ImageTest extends JFrame {
 		ImageIcon imgIc3 = new ImageIcon( Engine.getInstance().getbiFin() );
 		buttonImg3.setIcon(imgIc3);
 		frame.pack();
-		
+		*/
 		
 		
 		GUI myGUI = new GUI();

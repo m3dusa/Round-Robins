@@ -2,7 +2,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
+import java.awt.image.BufferedImage;
+
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -10,9 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle;
-
-import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 import Models.ImageFrame;
 
@@ -43,7 +43,12 @@ public class GUI extends javax.swing.JFrame {
 	private JButton a1;
 	private JButton pic2;
 	private JButton diff;
+<<<<<<< HEAD
 	public SelectAlg alg;
+=======
+	private ImageFrame ifPic1 = null;
+	private ImageFrame ifPic2 = null;
+>>>>>>> c2c2eb0cbeef904c32623d1b2c7b621e21849cc0
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -254,8 +259,23 @@ public class GUI extends javax.swing.JFrame {
 			Image image = imgIc1.getImage().getScaledInstance(250, 285, Image.SCALE_SMOOTH);
 			imgIc1.setImage(image);
 			pic1.setIcon(imgIc1);
+<<<<<<< HEAD
 			ImageFrame newImgFrame = new ImageFrame(path);
 			Engine.getInstance().addImage(newImgFrame);
+=======
+
+			ifPic1 = new ImageFrame(path);
+			Engine.getInstance().addImage(ifPic1);
+			
+			if(((ImageIcon)pic2.getIcon()) != null) {
+				System.out.println("pic2 not null");
+				updateMiddle();
+				
+			}
+			else {
+				System.out.println("pic2 is null");
+			}
+>>>>>>> c2c2eb0cbeef904c32623d1b2c7b621e21849cc0
 		}
 	}
 	
@@ -272,9 +292,23 @@ public class GUI extends javax.swing.JFrame {
 			imgIc2.setDescription(path);
 			pic2.setIcon(imgIc2);
 
-			ImageFrame newImgFrame = new ImageFrame(path);
-			Engine.getInstance().addImage(newImgFrame);
+			ifPic2 = new ImageFrame(path);
+			Engine.getInstance().addImage(ifPic2);
+			
+			if(((ImageIcon)pic1.getIcon()) != null) {
+				System.out.println("pic1 not null");
+				updateMiddle();
+				
+			}
+			else {
+				System.out.println("pic1 is null");
+			}
 		}
+	}
+	
+	public void updateMiddle() {
+		Engine.getInstance().findDiff(ifPic1, ifPic2);
+		
 	}
 	
 	private void a1ActionPerformed(ActionEvent evt) {
