@@ -1,4 +1,5 @@
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -42,6 +43,7 @@ public class GUI extends javax.swing.JFrame {
 	private JButton a1;
 	private JButton pic2;
 	private JButton diff;
+	public SelectAlg alg;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -172,7 +174,7 @@ public class GUI extends javax.swing.JFrame {
 				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				    .addComponent(pic1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 285, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(diff, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 284, GroupLayout.PREFERRED_SIZE)
+				    .addComponent(diff, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 285, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(pic2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 285, GroupLayout.PREFERRED_SIZE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -247,10 +249,11 @@ public class GUI extends javax.swing.JFrame {
 		if(returnVal == 0) {
 			String path = fc.getSelectedFile().toString();
 			//ImageIcon imgIc1 = new ImageIcon(path);
+			
 			ImageIcon imgIc1 = new ImageIcon(path);
-			imgIc1.setDescription(path);
+			Image image = imgIc1.getImage().getScaledInstance(250, 285, Image.SCALE_SMOOTH);
+			imgIc1.setImage(image);
 			pic1.setIcon(imgIc1);
-
 			ImageFrame newImgFrame = new ImageFrame(path);
 			Engine.getInstance().addImage(newImgFrame);
 		}
@@ -264,6 +267,8 @@ public class GUI extends javax.swing.JFrame {
 			String path = fc.getSelectedFile().toString();
 			//ImageIcon imgIc1 = new ImageIcon(path);
 			ImageIcon imgIc2 = new ImageIcon(path);
+			Image image = imgIc2.getImage().getScaledInstance(250, 285, Image.SCALE_SMOOTH);
+			imgIc2.setImage(image);
 			imgIc2.setDescription(path);
 			pic2.setIcon(imgIc2);
 
@@ -273,23 +278,23 @@ public class GUI extends javax.swing.JFrame {
 	}
 	
 	private void a1ActionPerformed(ActionEvent evt) {
-		SelectAlg alg1 = new SelectAlg();
-		alg1.setVisible(true);
+		alg = new SelectAlg();
+		alg.setVisible(true);
 	}
 	
 	private void a2ActionPerformed(ActionEvent evt) {
-		SelectAlg alg2 = new SelectAlg();
-		alg2.setVisible(true);
+		alg = new SelectAlg();
+		alg.setVisible(true);
 	}
 	
 	private void a3ActionPerformed(ActionEvent evt) {
-		SelectAlg alg3 = new SelectAlg();
-		alg3.setVisible(true);
+		alg = new SelectAlg();
+		alg.setVisible(true);
 	}
 	
 	private void a4ActionPerformed(ActionEvent evt) {
-		SelectAlg alg4 = new SelectAlg();
-		alg4.setVisible(true);
+		alg = new SelectAlg();
+		alg.setVisible(true);
 	}
 
 }

@@ -80,6 +80,11 @@ public class SelectAlg extends javax.swing.JFrame {
 				okayBut = new JButton();
 				okayBut.setText("OK");
 				okayBut.setLayout(null);
+				okayBut.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						okayButActionPerformed(evt);
+					}
+				});
 			}
 			{
 				ja1 = new JCheckBox();
@@ -217,6 +222,11 @@ public class SelectAlg extends javax.swing.JFrame {
 	private void pic2boxItemStateChanged(ItemEvent evt) {
 		System.out.println("pic2box.itemStateChanged, event="+evt);
 		//TODO add your code for pic2box.itemStateChanged
+	}
+	
+	private void okayButActionPerformed(ActionEvent evt) {
+		this.setVisible(false);
+		//TODO add your code for okayBut.actionPerformed
 	}
 
 }
