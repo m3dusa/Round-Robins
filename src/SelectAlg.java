@@ -49,7 +49,6 @@ public class SelectAlg extends javax.swing.JFrame {
 	
 	ImageFrame img1;
 	ImageFrame img2;
-	GUI gui;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -57,16 +56,15 @@ public class SelectAlg extends javax.swing.JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				SelectAlg inst = new SelectAlg(null);
+				SelectAlg inst = new SelectAlg();
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 			}
 		});
 	}
 	
-	public SelectAlg(GUI gui) {
+	public SelectAlg() {
 		super();
-		this.gui = gui;
 		initGUI();
 	}
 	
@@ -300,7 +298,7 @@ public class SelectAlg extends javax.swing.JFrame {
 		//System.out.println("--- " + algMenu.getSelectedValue());
 		if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_AMPLIFY){
 			Engine.getInstance().process(Engine.ALG_AMPLIFY, img1);
-
+		}
 		//TODO add your code for okayBut.actionPerformed
 	}
 	
