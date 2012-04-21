@@ -44,6 +44,8 @@ public class Engine {
 	
 	// alg -> arguments
 	HashMap<Integer, Integer> algorithmMap = new HashMap<Integer, Integer>();
+	
+	HashMap<String, Integer> strMap;
 
 	/**
 	 * Constructor
@@ -66,32 +68,59 @@ public class Engine {
 	public String[] getAlgoStrings() {
 		String retStr[] = new String[algorithmMap.size()];
 		
-		for(int i = 0; i< algorithmMap.keySet().size(); i++) {
-			if(algorithmMap.get(i)==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
-				retStr[i] = "Add(Simplify(Amplify))";
+		strMap = new HashMap<String, Integer>();
+		
+		int c = 0;
+		for(Integer i : algorithmMap.keySet()) {
+			if(i==Engine.ALG_ADD_SIMPLIFY_AMPLIFY) {
+				String s = "Add(Simplify(Amplify))";
+				retStr[c] = s;
+				strMap.put(s, c);
 			}
-			else if(algorithmMap.get(i)==Engine.ALG_AMPLIFY) {
-				retStr[i] = "Amplify";
+			else if(i==Engine.ALG_AMPLIFY) {
+				String s = "Amplify";
+				retStr[c] = s;
+				strMap.put(s, c);
 			}
-			else if(algorithmMap.get(i)==Engine.ALG_AVG) {
-				retStr[i] = "Average";
+			else if(i==Engine.ALG_AVG) {
+				String s = "Average";
+				retStr[c] = s;
+				strMap.put(s, c);
 			}
-			else if(algorithmMap.get(i)==Engine.ALG_BLACKWHITE) {
-				retStr[i] = "Black and White";
+			else if(i==Engine.ALG_BLACKWHITE) {
+				String s = "Black and White";
+				retStr[c] = s;
+				strMap.put(s, c);
 			}
-			else if(algorithmMap.get(i)==Engine.ALG_DELTA) {
-				retStr[i] = "Delta";
+			else if(i==Engine.ALG_DELTA) {
+				String s = "Delta";
+				retStr[c] = s;
+				strMap.put(s, c);
 			}
-			else if(algorithmMap.get(i)==Engine.ALG_DELTA_AMPLIFY) {
-				retStr[i] = "Delta(Amplify)";
+			else if(i==Engine.ALG_DELTA_AMPLIFY) {
+				String s = "Delta(Amplify)";
+				retStr[c] = s;
+				strMap.put(s, c);
 			}
-			else if(algorithmMap.get(i)==Engine.ALG_EDGE) {
-				retStr[i] = "Edge";
+			else if(i==Engine.ALG_EDGE) {
+				String s = "Edge";
+				retStr[c] = s;
+				strMap.put(s, c);
 			}
-			else if(algorithmMap.get(i)==Engine.ALG_SIMPLIFY_AMPLIFY) {
-				retStr[i] = "Simplify(Amplify)";
+			else if(i==Engine.ALG_SIMPLIFY_AMPLIFY) {
+				String s = "Simplify(Amplify)";
+				retStr[c] = s;
+				strMap.put(s, c);
 			}
+			
+			c++;
 		}
+		
+		
+		for(int i=0; i<retStr.length; i++) {
+			System.out.println("-> "+retStr[i]);
+		}
+		System.out.println();
 		
 		return retStr;
 	}
