@@ -93,18 +93,38 @@ public class SelectAlg extends javax.swing.JFrame {
 			{
 				ja1 = new JCheckBox();
 				ja1.setText("a1");
+				ja1.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						ja1ItemStateChanged(evt);
+					}
+				});
 			}
 			{
 				ja2 = new JCheckBox();
 				ja2.setText("a2");
+				ja2.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						ja2ItemStateChanged(evt);
+					}
+				});
 			}
 			{
 				ja3 = new JCheckBox();
 				ja3.setText("a3");
+				ja3.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						ja3ItemStateChanged(evt);
+					}
+				});
 			}
 			{
 				ja4 = new JCheckBox();
 				ja4.setText("a4");
+				ja4.addItemListener(new ItemListener() {
+					public void itemStateChanged(ItemEvent evt) {
+						ja4ItemStateChanged(evt);
+					}
+				});
 			}
 			{
 				s1check = new JCheckBox();
@@ -180,10 +200,10 @@ public class SelectAlg extends javax.swing.JFrame {
 				                        .addGap(20)))
 				                .addGap(39)
 				                .addGroup(thisLayout.createParallelGroup()
-				                    .addComponent(s1check, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
 				                    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                        .addComponent(ja2, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
-				                        .addGap(41))))
+				                        .addGap(41))
+				                    .addComponent(s1check, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)))
 				            .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				                .addComponent(algLa, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
 				                .addGap(63)))
@@ -278,6 +298,26 @@ public class SelectAlg extends javax.swing.JFrame {
 				}
 			}
 		}
+	}
+	
+	private void ja1ItemStateChanged(ItemEvent evt) {
+		System.out.println("ja1.itemStateChanged, event="+evt);
+		//TODO add your code for ja1.itemStateChanged
+	}
+	
+	private void ja2ItemStateChanged(ItemEvent evt) {
+		System.out.println("ja2.itemStateChanged, event="+evt);
+		//TODO add your code for ja2.itemStateChanged
+	}
+	
+	private void ja3ItemStateChanged(ItemEvent evt) {
+		System.out.println("ja3.itemStateChanged, event="+evt);
+		//TODO add your code for ja3.itemStateChanged
+	}
+	
+	private void ja4ItemStateChanged(ItemEvent evt) {
+		System.out.println("ja4.itemStateChanged, event="+evt);
+		//TODO add your code for ja4.itemStateChanged
 	}
 
 }
