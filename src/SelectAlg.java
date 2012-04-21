@@ -44,6 +44,7 @@ public class SelectAlg extends javax.swing.JFrame {
 	private JLabel sources;
 	int boxesChecked = 0;
 	ListModel algMenuModel;
+	GUI gui;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -51,15 +52,16 @@ public class SelectAlg extends javax.swing.JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				SelectAlg inst = new SelectAlg();
+				SelectAlg inst = new SelectAlg(null);
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 			}
 		});
 	}
 	
-	public SelectAlg() {
+	public SelectAlg(GUI gui) {
 		super();
+		this.gui = gui;
 		initGUI();
 	}
 	
@@ -278,9 +280,13 @@ public class SelectAlg extends javax.swing.JFrame {
 	
 	private void okayButActionPerformed(ActionEvent evt) {
 		this.setVisible(false);
-		//if (algMenuModel.getElementAt(algMenu.getSelectedIndex()) == Engine.ALG_AMPLIFY){
-		//Engine.getInstance().process(algorithm, img);
-		//}
+		if(boxesChecked ==1 ){
+		if (Engine.getInstance().revMap.get(algMenu.getSelectedIndex()) == Engine.ALG_AMPLIFY){
+			Engine.getInstance().process(Engine.getInstance().revMap.get(algMenuModel.getElementAt(algMenu.getSelectedIndex())),  );
+		}
+		}
+		else {
+		}
 		//TODO add your code for okayBut.actionPerformed
 	}
 	
