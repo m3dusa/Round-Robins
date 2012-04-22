@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 
 import Models.DensityPix;
 import Models.ImageFrame;
+import Models.ImageFrameEssence;
 
 /**
  * This is the main engine to compare two (or more) images. It is a singleton
@@ -23,16 +24,16 @@ import Models.ImageFrame;
  */
 public class Engine {
 	private static Engine eng = null;
-	
+
 	private int ALGORITHM = 4;
 
 	LinkedList<ImageFrame> imgList = new LinkedList<ImageFrame>();
 	BufferedImage biLast;
 	BufferedImage biFin;
-	
+
 	int sumX = 0;
 	int sumY = 0;
-	
+
 	static int ALG_EDGE = 1;
 	static int ALG_AMPLIFY = 4;
 	static int ALG_DELTA = 0;
@@ -41,12 +42,16 @@ public class Engine {
 	static int ALG_AVG_SIMPLIFY_AMPLIFY = 10;
 	static int ALG_SIMPLIFY_AMPLIFY = 11;
 	static int ALG_BLACKWHITE = 2;
-	
+	static int ALG_CYAN = 12;
+	static int ALG_SMOOTHEN = 13;
+
+	static int ALG_DIFF = 99;
+
 	// alg -> arguments
 	HashMap<Integer, Integer> algorithmMap = new HashMap<Integer, Integer>();
-	
+
 	HashMap<String, Integer> strMap;
-	
+
 	HashMap<String, Integer> revMap;
 
 	/**
@@ -61,18 +66,21 @@ public class Engine {
 		algorithmMap.put(Engine.ALG_AVG_SIMPLIFY_AMPLIFY, 2);
 		algorithmMap.put(Engine.ALG_SIMPLIFY_AMPLIFY, 1);
 		algorithmMap.put(Engine.ALG_BLACKWHITE, 1);
+		algorithmMap.put(Engine.ALG_CYAN, 1);
+		algorithmMap.put(Engine.ALG_DIFF, 2);
+		algorithmMap.put(Engine.ALG_SMOOTHEN, 1);
 	}
-	
+
 	public HashMap<Integer, Integer> getAlgoMap() {
 		return algorithmMap;
 	}
-	
+
 	public String[] getAlgoStrings() {
 		String retStr[] = new String[algorithmMap.size()];
-		
+
 		strMap = new HashMap<String, Integer>();
 		revMap = new HashMap<String, Integer>();
-		
+
 		int c = 0;
 		for(Integer i : algorithmMap.keySet()) {
 			if(i==Engine.ALG_AVG_SIMPLIFY_AMPLIFY) {
@@ -123,10 +131,28 @@ public class Engine {
 				strMap.put(s, algorithmMap.get(i));
 				revMap.put(s, ALG_SIMPLIFY_AMPLIFY);
 			}
-			
+			else if(i==Engine.ALG_CYAN) {
+				String s = "Cyan";
+				retStr[c] = s;
+				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, ALG_CYAN);
+			}
+			else if(i==Engine.ALG_DIFF) {
+				String s = "Find Difference";
+				retStr[c] = s;
+				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, ALG_DIFF);
+			}
+			else if(i==Engine.ALG_SMOOTHEN) {
+				String s = "Smoothen";
+				retStr[c] = s;
+				strMap.put(s, algorithmMap.get(i));
+				revMap.put(s, ALG_SMOOTHEN);
+			}
+
 			c++;
 		}
-		
+
 
 		return retStr;
 	}
@@ -146,7 +172,7 @@ public class Engine {
 	public BufferedImage getbiLast() {
 		return biLast;
 	}
-	
+
 	public BufferedImage getbiFin() {
 		return biFin;
 	}
@@ -159,9 +185,11 @@ public class Engine {
 	 * @param imgFrame
 	 *            An image to eventually be analyzed
 	 */
-	
+
 	public void addImage(ImageFrame imgFrame) {
 		imgList.add(imgFrame);
+		
+		System.out.println("added image");
 
 		if (imgList.size() >= 2) {
 			ImageFrame if1 = imgList.getFirst();
@@ -172,14 +200,14 @@ public class Engine {
 			findDiff(if1, if2);
 		}
 	}
-	
+
 	public void findDiff(ImageFrame if1, ImageFrame if2) {
-		biFin = process(Engine.ALG_AVG_SIMPLIFY_AMPLIFY, if1, if2);
-//		biFin = process(Engine.ALG_SIMPLIFY_AMPLIFY, if2);
-//		biFin = process(Engine.ALG_AVG, if1, if2);
+		biFin = process(Engine.ALG_DIFF, if1, if2);
+		//		biFin = process(Engine.ALG_SIMPLIFY_AMPLIFY, if2);
+		//		biFin = process(Engine.ALG_AVG, if1, if2);
 		saveImage();
 	}
-	
+
 	public BufferedImage process(int algorithm, ImageFrame img) {
 		if(algorithm==Engine.ALG_AMPLIFY) {
 			biLast = amplifyColor(img).getBum();
@@ -197,10 +225,18 @@ public class Engine {
 			biLast = blackAndWhite(img).getBum();
 			return blackAndWhite(img).getBum();
 		}
-		
+		if(algorithm==Engine.ALG_CYAN) {
+			biLast = cyan(img).getBum();
+			return cyan(img).getBum();
+		}
+		if(algorithm==Engine.ALG_SMOOTHEN) {
+			biLast = smoothen(img).getBum();
+			return smoothen(img).getBum();
+		}
+
 		return null;
 	}
-	
+
 	public BufferedImage process(int algorithm, ImageFrame img1, ImageFrame img2) {
 		if(algorithm==Engine.ALG_DELTA) {
 			biLast = deltaComparison(img1, img2).getBum();
@@ -218,7 +254,11 @@ public class Engine {
 			biLast = avg(removeNoise( amplifyColor(img1) ), removeNoise( amplifyColor(img2) )).getBum();
 			return avg(removeNoise( amplifyColor(img1) ), removeNoise( amplifyColor(img2) )).getBum();
 		}
-		
+		else if(algorithm==Engine.ALG_DIFF) {
+			biLast = mainAlgorithm(img1, img2).getBum();
+			return mainAlgorithm(img1, img2).getBum();
+		}
+
 		return null;
 	}
 
@@ -268,11 +308,11 @@ public class Engine {
 			biLast = avg(if1, if2).getBum();
 			break;
 		}
-		
-		
+
+
 		saveImage();
 	}
-	
+
 	public void saveImage() {
 		File output = new File("img_out.png");
 		try {
@@ -281,7 +321,7 @@ public class Engine {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/** Amplifies the color at a point.
 	 * TODO: FIX ME!
 	 * @WARNING will break on points close to the edge
@@ -318,9 +358,9 @@ public class Engine {
 			try {
 				if1.getBum().setRGB(p.x, p.y-i, col.getRGB());
 			} catch(ArrayIndexOutOfBoundsException e) {};
-			
+
 		}
-		
+
 	}
 
 	/**
@@ -333,8 +373,12 @@ public class Engine {
 	 *            the second ImageFrame
 	 */
 	public ImageFrame deltaComparison(ImageFrame if1, ImageFrame if2) {
-		for (int col = 0; col < if1.getHeight(); col++) {
-			for (int row = 0; row < if1.getWidth(); row++) {
+		
+		int smallerHeight = Math.min(if1.getHeight(), if2.getHeight());
+		int smallerWidth = Math.min(if1.getWidth(), if2.getWidth());
+		
+		for (int col = 0; col < smallerHeight; col++) {
+			for (int row = 0; row < smallerWidth; row++) {
 				int[] d1Array = new int[4];
 				if1.getRar().getPixel(row, col, d1Array);
 				// System.out.println("image 1: " + d1Array[0] + " " +
@@ -342,7 +386,7 @@ public class Engine {
 				// + " " + d1Array[2] + " " + d1Array[3]);
 
 				int[] d2Array = new int[4];
-				System.out.println("at "+row+", "+col);
+				//System.out.println("at "+row+", "+col);
 				if2.getRar().getPixel(row, col, d2Array);
 				// System.out.println("image 2: " + d2Array[0] + " " +
 				// d2Array[1]
@@ -350,11 +394,11 @@ public class Engine {
 
 				if (d1Array[0] != d2Array[0] || d1Array[1] != d2Array[1]
 						|| d1Array[2] != d2Array[2] || d1Array[3] != d2Array[3]) {
-					if1.getBum().setRGB(row, col, 0xff00fff0); // cyan color
+					if1.getBum().setRGB(row, col, 0xff00ffff); // cyan color
 				}
 			}
 		}
-		
+
 		return new ImageFrame(if1.getBum());
 	}
 
@@ -367,6 +411,7 @@ public class Engine {
 	 *            the ImageFrame to analyze
 	 */
 	public ImageFrame edgeDetection(ImageFrame if1) {
+
 		for (int col = 1; col < if1.getHeight() - 1; col++) {
 			for (int row = 1; row < if1.getWidth() - 1; row++) {
 
@@ -427,13 +472,13 @@ public class Engine {
 				//System.out.println(diff);
 
 				if (diff > 80) {
-					
+
 					if1.getBum().setRGB(row, col, 0xff00fff0);
 				}
 
 			}
 		}
-		
+
 		return new ImageFrame(if1.getBum());
 	}
 
@@ -442,9 +487,9 @@ public class Engine {
 	 * @param if1 the ImageFrame to analyze
 	 */
 	public ImageFrame blackAndWhite(ImageFrame if1n) {
-		
+
 		ImageFrame if1 = new ImageFrame(if1n);
-		
+
 		for (int col = 0; col < if1.getHeight(); col++) {
 			for (int row = 0; row < if1.getWidth(); row++) {
 				int[] color = new int[4];
@@ -453,9 +498,9 @@ public class Engine {
 				int g = (int)(color[1]);
 				int b = (int)(color[2]);
 				int allColor = (r+g+b)/3;
-				
+
 				if1.getBum().setRGB(row, col, allColor);
-				
+
 				if(allColor < 10){
 					if1.getBum().setRGB(row, col, 0xff000000);
 				}
@@ -506,10 +551,10 @@ public class Engine {
 				}			
 			}
 		}
-		
+
 		return new ImageFrame(if1.getBum());
 	}
-	
+
 	/**
 	 * ----- ALGORITHM 3 ----- Blurs image by averaging neighboring pixels
 	 * @param if1 the ImageFrame to analyze
@@ -522,61 +567,61 @@ public class Engine {
 				int r1 = (int)(color[0]);
 				int g1 = (int)(color[1]);
 				int b1 = (int)(color[2]);
-				
+
 				if1.getRar().getPixel(row-1, col, color);
 				int r2 = (int)(color[0]);
 				int g2 = (int)(color[1]);
 				int b2 = (int)(color[2]);
-				
+
 				if1.getRar().getPixel(row-1, col+1, color);
 				int r3 = (int)(color[0]);
 				int g3 = (int)(color[1]);
 				int b3 = (int)(color[2]);
-				
+
 				if1.getRar().getPixel(row, col-1, color);
 				int r4 = (int)(color[0]);
 				int g4 = (int)(color[1]);
 				int b4 = (int)(color[2]);
-				
+
 				if1.getRar().getPixel(row, col, color);
 				int r5 = (int)(color[0]);
 				int g5 = (int)(color[1]);
 				int b5 = (int)(color[2]);
-				
+
 				if1.getRar().getPixel(row, col+1, color);
 				int r6 = (int)(color[0]);
 				int g6 = (int)(color[1]);
 				int b6 = (int)(color[2]);
-				
+
 				if1.getRar().getPixel(row+1, col-1, color);
 				int r7 = (int)(color[0]);
 				int g7 = (int)(color[1]);
 				int b7 = (int)(color[2]);
-				
+
 				if1.getRar().getPixel(row+1, col, color);
 				int r8 = (int)(color[0]);
 				int g8 = (int)(color[1]);
 				int b8 = (int)(color[2]);
-				
+
 				if1.getRar().getPixel(row+1, col+1, color);
 				int r9 = (int)(color[0]);
 				int g9 = (int)(color[1]);
 				int b9 = (int)(color[2]);
-				
+
 				int avgRed = (r1+r2+r3+r4+r5+r6+r7+r8+r9)/9;
 				int avgGreen = (g1+g2+g3+g4+g5+g6+g7+g8+g9)/9;
 				int avgBlue = (b1+b2+b3+b4+b5+b6+b7+b8+b9)/9;
-				
+
 				Color avgCol = new Color(avgRed, avgGreen, avgBlue);
-				
-				
+
+
 				if1.getBum().setRGB(row, col, avgCol.getRGB());
 			}
 		}
-		
+
 		return new ImageFrame(if1.getBum());
 	}
-	
+
 	/**
 	 * ----- ALGORITHM 4 ----- 
 	 * This algorithm effectively amplifies the red, green, or blue color of a pixel.
@@ -605,54 +650,54 @@ public class Engine {
 	 * @param if1 the ImageFrame to analyze
 	 */
 	public ImageFrame amplifyColor(ImageFrame if1n) {
-		
+
 		ImageFrame if1 = new ImageFrame(if1n);
-		
+
 		int rCount = 0;
 		int gCount = 0;
 		int bCount = 0;
-		
-		
+
+
 		for (int col = 1; col < if1.getHeight()-1; col++) {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
 				int[] color = new int[4];
 				if1.getRar().getPixel(row, col, color);
-				
+
 				int r = (int)(color[0]);
 				int g = (int)(color[1]);
 				int b = (int)(color[2]);
-				
+
 				int alpha = color[3];
 				//System.out.println("("+row+","+col+")="+alpha);
-				
+
 				//System.out.println();
-				
+
 				if(alpha==0) {
 					//System.out.println("("+row+","+col+")="+alpha);
 					continue;
 				}
-				
+
 				rCount += r;
 				gCount += g;
 				bCount += b;
 				//if1.getBum().setRGB(row, col, avgCol.getRGB());
 			}
 		}
-		
+
 		int totalPix = if1.getHeight()*if1.getWidth();
 		int rAvg = rCount/totalPix;
 		int gAvg = gCount/totalPix;
 		int bAvg = bCount/totalPix;
-		
+
 		System.out.println("r: "+rAvg+", g: "+gAvg+", b: "+bAvg);
-		
+
 		int avgColVal = (rAvg+gAvg+bAvg)/3;
 		int diffR = avgColVal - rAvg;
 		int diffG = avgColVal - gAvg;
 		int diffB = avgColVal - bAvg;
-		
+
 		//System.out.println("r: "+diffR+", g: "+diffG+", b: "+diffB);
-		
+
 		for (int col = 1; col < if1.getHeight()-1; col++) {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
 				int[] color = new int[4];
@@ -660,17 +705,17 @@ public class Engine {
 				int r = (int)(color[0]);
 				int g = (int)(color[1]);
 				int b = (int)(color[2]);
-				
+
 				int alpha = color[3];
 				if(alpha==0) {
 					//System.out.println("alpha found, skipping");
 					continue;
 				}
-				
+
 				r = r+diffR;
 				g = g+diffG;
 				b = b+diffB;
-				
+
 				if(r >= g && r>=b) {
 					if1.getBum().setRGB(row, col, 0xffff0000);
 				}
@@ -680,19 +725,19 @@ public class Engine {
 				else if(b >= r && b>=g) {
 					if1.getBum().setRGB(row, col, 0xff0000ff);
 				}
-				
+
 				//if1.getBum().setRGB(row, col, 0xffff0000);
 			}
 		}
-		
+
 		return new ImageFrame(if1.getBum());
 	}
-	
+
 	boolean [][] pixChecked;
-	
-	
-	
-	public ImageFrame removeNoise(ImageFrame if1) {
+
+
+
+	public ImageFrameEssence removeNoise(ImageFrame if1) {
 		// 2-D boolean array
 		pixChecked = new boolean[if1.getWidth()][if1.getHeight()];
 		for(int i=0; i<if1.getWidth(); i++) {
@@ -700,26 +745,26 @@ public class Engine {
 				pixChecked[i][j] = false;
 			}
 		}
-		
+
 		//int area = pixAreaItr(5, 5, if1.getRar());
 		//System.out.println(area);
-		
+
 		ArrayList<DensityPix> densityPixList = new ArrayList<DensityPix>();
 		for (int col = 1; col < if1.getHeight()-1; col++) {
 			for (int row = 1; row < if1.getWidth()-1; row++) {
-				
+
 				int[] color = new int[4];
 				if1.getRar().getPixel(row, col, color);
 				int r = (int)(color[0]);
 				int g = (int)(color[1]);
 				int b = (int)(color[2]);
-				
+
 				int alpha = color[3];
-				
+
 				if(alpha==0) {
 					continue;
 				}
-				
+
 				if(pixChecked[row][col]==false) {
 					sumX = 0;
 					sumY = 0;
@@ -727,26 +772,26 @@ public class Engine {
 					//System.out.println("("+row+","+col+"): "+area);
 					int avgx = sumX/area;
 					int avgy = sumY/area;
-					
-					System.out.println("("+avgx+","+avgy+"): "+area);
-					
-					
+
+					//System.out.println("("+avgx+","+avgy+"): "+area);
+
+
 					Color c = new Color(r, g, b);
-					
+
 					densityPixList.add(new DensityPix(avgx, avgy, area, c.getRGB()));
 				}
 			}
 		}
-		
+
 		// clear image
 		for (int col = 0; col < if1.getHeight(); col++) {
 			for (int row = 0; row < if1.getWidth(); row++) {
 				if1.getBum().setRGB(row, col, 0xffffffff);
 			}
 		}
-		
+
 		System.out.println("dens size: "+densityPixList.size());
-		
+
 		// filter out weaker densities
 		Collections.sort(densityPixList, new Comparator<DensityPix>() {
 			@Override
@@ -757,209 +802,475 @@ public class Engine {
 					return 1;
 				else return 0;
 			}
-			
+
 		});
-		
-		if(densityPixList.size()>8) {
-			densityPixList = new ArrayList<DensityPix>(densityPixList.subList(0, 8));
+
+		if(densityPixList.size()>3) {
+			densityPixList = new ArrayList<DensityPix>(densityPixList.subList(pix0, pix2+1));
 		}
-		
-		
+
+
 		for(DensityPix dp : densityPixList) {
 			if1.getBum().setRGB(dp.x, dp.y, dp.col);
-			
+
 			// optionally amplify colors
-			 amplifyPix(if1, dp, 3);
+			amplifyPix(if1, dp, 3);
 		}
+
+
+		ImageFrameEssence ife = new ImageFrameEssence(if1.getBum());
+		ife.setDensityPixList(densityPixList);
+		return ife;
+
+		//return new ImageFrame(if1.getBum());
+	}
+
+	public ImageFrameEssence getDensity(ImageFrame if1) {
+		// 2-D boolean array
+		pixChecked = new boolean[if1.getWidth()][if1.getHeight()];
+		for(int i=0; i<if1.getWidth(); i++) {
+			for(int j=0; j<if1.getHeight(); j++) {
+				pixChecked[i][j] = false;
+			}
+		}
+
+		//int area = pixAreaItr(5, 5, if1.getRar());
+		//System.out.println(area);
+
+		ArrayList<DensityPix> densityPixList = new ArrayList<DensityPix>();
+		for (int col = 1; col < if1.getHeight()-1; col++) {
+			for (int row = 1; row < if1.getWidth()-1; row++) {
+
+				int[] color = new int[4];
+				if1.getRar().getPixel(row, col, color);
+				int r = (int)(color[0]);
+				int g = (int)(color[1]);
+				int b = (int)(color[2]);
+
+				int alpha = color[3];
+
+				if(alpha==0) {
+					continue;
+				}
+
+				if(pixChecked[row][col]==false) {
+					sumX = 0;
+					sumY = 0;
+					int area = pixAreaItr(row, col, if1.getRar());
+					//System.out.println("("+row+","+col+"): "+area);
+					int avgx = sumX/area;
+					int avgy = sumY/area;
+
+					//System.out.println("("+avgx+","+avgy+"): "+area);
+
+					Color c = new Color(r, g, b);
+
+					if(area>3) {
+						//System.out.println("("+avgx+","+avgy+"): "+area);
+						densityPixList.add(new DensityPix(avgx, avgy, area, c.getRGB()));
+					}
+				}
+			}
+		}
+
+		System.out.println("dens size: "+densityPixList.size());
+
+		// filter out weaker densities
+		Collections.sort(densityPixList, new Comparator<DensityPix>() {
+			@Override
+			public int compare(DensityPix o1, DensityPix o2) {
+				if(o1.area > o2.area) 
+					return -1;
+				if(o1.area < o2.area) 
+					return 1;
+				else return 0;
+			}
+
+		});
+
+
+		ImageFrameEssence ife = new ImageFrameEssence(if1.getBum());
+		ife.setDensityPixList(densityPixList);
+		return ife;
+
+		//return new ImageFrame(if1.getBum());
+	}
+
+	int pix0 = 2;
+	int pix1 = 3;
+	int pix2 = 4;
+
+	
+	public ImageFrame mainAlgorithm(ImageFrame if1n, ImageFrame if2n) {
+		ImageFrame if1 = new ImageFrame(if1n);
+		ImageFrame if2 = new ImageFrame(if2n);
 		
-		
-		//ImageFrameEssence ife = new ImageFrameEssence(if1.getBum());
-		//ife.setDensityPixList(densityPixList);
-		
-		return new ImageFrame(if1.getBum());
+		ImageFrame ifout = new ImageFrame(smoothen(cyan(deltaComparison(amplifyColor(if1), amplifyColor(if2)))).getBum() );
+		return ifout;
 	}
 	
-	
-	//TODO
+	public ImageFrame mainAlgorithmOld(ImageFrame if1n, ImageFrame if2n) {
+
+		ImageFrame if1 = new ImageFrame(if1n);
+		ImageFrame if2 = new ImageFrame(if2n);
+
+		if1 = amplifyColor(if1);
+		if2 = amplifyColor(if2);
+
+		ImageFrameEssence ife1 = getDensity(if1);
+		ImageFrameEssence ife2 = getDensity(if2);
+
+		//System.out.println(ife1.getDensityPixList().toString());
+		//System.out.println("---");
+		//System.out.println(ife2.getDensityPixList().toString());
+
+
+
+
+		DensityPix dp1a = ife1.getDensityPixList().get(pix0); // x1,y1 
+		DensityPix dp1b = ife2.getDensityPixList().get(pix0); // -> x1',y1'
+
+		DensityPix dp2a = ife1.getDensityPixList().get(pix1); // x2,y2 
+		DensityPix dp2b = ife2.getDensityPixList().get(pix1); // -> x2',y2'
+
+		DensityPix dp3a = ife1.getDensityPixList().get(pix2); // x3,y3 
+		DensityPix dp3b = ife2.getDensityPixList().get(pix2); // -> x3',y3'		
+
+
+		System.out.println(dp1a.x+","+dp1a.y+"  --->  "+dp1b.x+","+dp1b.y+ " :"+dp1a.area+"|"+dp1b.area);
+		System.out.println(dp2a.x+","+dp2a.y+"  --->  "+dp2b.x+","+dp2b.y+ " :"+dp2a.area+"|"+dp2b.area);
+		System.out.println(dp3a.x+","+dp3a.y+"  --->  "+dp3b.x+","+dp3b.y+ " :"+dp3a.area+"|"+dp3b.area);
+
+
+		double dist1 = getDistance(dp1a, dp1b);
+		double dist2 = getDistance(dp1a, dp2b);
+		double dist3 = getDistance(dp1a, dp3b);
+
+		DensityPix tmp1b = null;
+		DensityPix tmp2b = null;
+		DensityPix tmp3b = null;
+
+		if(dist1 <= dist2 && dist1 <= dist3) {
+			tmp1b = new DensityPix(ife2.getDensityPixList().get(pix0));
+		}
+		else if(dist2 <= dist1 && dist2 <= dist3) {
+			tmp1b = new DensityPix(ife2.getDensityPixList().get(pix1));
+		}
+		else if(dist3 <= dist1 && dist3 <= dist1) {
+			tmp1b = new DensityPix(ife2.getDensityPixList().get(pix2));
+		}
+		//System.out.println("dp1b is now "+dp1b.x+","+dp1b.y);
+
+		dist1 = getDistance(dp2a, dp1b);
+		dist2 = getDistance(dp2a, dp2b);
+		dist3 = getDistance(dp2a, dp3b);
+
+		if(dist1 <= dist2 && dist1 <= dist3) {
+			System.out.println("dist1 is smallest");
+			tmp2b = new DensityPix(ife2.getDensityPixList().get(pix0));
+		}
+		else if(dist2 <= dist1 && dist2 <= dist3) {
+			System.out.println("dist2 is smallest");
+			tmp2b = new DensityPix(ife2.getDensityPixList().get(pix1));
+		}
+		else if(dist3 <= dist1 && dist3 <= dist1) {
+			System.out.println("dist3 is smallest");
+			tmp2b = new DensityPix(ife2.getDensityPixList().get(pix2));
+		}
+		//System.out.println("dp2b is now "+dp2b.x+","+dp2b.y);
+
+		dist1 = getDistance(dp3a, dp1b);
+		dist2 = getDistance(dp3a, dp2b);
+		dist3 = getDistance(dp3a, dp3b);
+
+		if(dist1 <= dist2 && dist1 <= dist3) {
+			tmp3b = new DensityPix(ife2.getDensityPixList().get(pix0));
+		}
+		else if(dist2 <= dist1 && dist2 <= dist3) {
+			tmp3b = new DensityPix(ife2.getDensityPixList().get(pix1));
+		}
+		else if(dist3 <= dist1 && dist3 <= dist1) {
+			tmp3b = new DensityPix(ife2.getDensityPixList().get(pix2));
+		}
+		//System.out.println("dp3b is now "+dp3b.x+","+dp3b.y);
+
+
+		dp1b = tmp1b;
+		dp2b = tmp2b;
+		dp3b = tmp3b;
+
+		System.out.println(dp1a.x+","+dp1a.y+"  --->  "+dp1b.x+","+dp1b.y+ " :"+dp1a.area+"|"+dp1b.area);
+		System.out.println(dp2a.x+","+dp2a.y+"  --->  "+dp2b.x+","+dp2b.y+ " :"+dp2a.area+"|"+dp2b.area);
+		System.out.println(dp3a.x+","+dp3a.y+"  --->  "+dp3b.x+","+dp3b.y+ " :"+dp3a.area+"|"+dp3b.area);
+
+
+		double determinant = getDeterminant(dp1a.x, dp1a.y, dp2a.x, dp2a.y, dp3a.x, dp3a.y) * 1.0;
+
+		double a11 = (dp2a.y - dp3a.y)*(1.0/determinant);
+		double a12 = (dp3a.y - dp1a.y)*(1.0/determinant);
+		double a13 = (dp1a.y - dp2a.y)*(1.0/determinant);
+		double a21 = (dp3a.x - dp2a.x)*(1.0/determinant);
+		double a22 = (dp1a.x - dp3a.x)*(1.0/determinant);
+		double a23 = (dp2a.x - dp1a.x)*(1.0/determinant);
+		double a31 = (dp2a.x*dp3a.y - dp2a.y*dp3a.x)*(1.0/determinant);
+		double a32 = (dp1a.y*dp3a.x - dp1a.x*dp3a.y)*(1.0/determinant);
+		double a33 = (dp1a.x*dp2a.y - dp1a.y*dp2a.x)*(1.0/determinant);
+
+
+		double aa = a11*dp1b.x + a12*dp2b.x + a13*dp3b.x;
+		double bb = a21*dp1b.x + a22*dp2b.x + a23*dp3b.x;
+		double cc = a31*dp1b.x + a32*dp2b.x + a33*dp3b.x;
+
+		double dd = a11*dp1b.y + a12*dp2b.y + a13*dp3b.y;
+		double ee = a21*dp1b.y + a22*dp2b.y + a23*dp3b.y;
+		double ff = a31*dp1b.y + a32*dp2b.y + a33*dp3b.y;
+
+		System.out.println("a="+aa+", b="+bb+", c="+cc);
+		System.out.println("d="+dd+", e="+ee+", f="+ff);
+
+		boolean [][] updated = new boolean[if1.getWidth()][if1.getHeight()];
+
+		for(int i=0; i<if1.getHeight()-1; i++) {
+			for(int j=0; j<if1.getWidth()-1; j++) {
+				updated[j][i] = false;
+			}
+		}
+
+		for (int col = 1; col < if1.getHeight()-1; col++) {
+			for (int row = 1; row < if1.getWidth()-1; row++) {
+				int[] color = new int[4];
+				if1.getRar().getPixel(row, col, color);
+				int r = (int)(color[0]);
+				int g = (int)(color[1]);
+				int b = (int)(color[2]);
+
+				int newx = (int)(aa*row + bb*col + cc);
+				int newy = (int)(dd*row + ee*col + ff);
+
+
+				int alpha = color[3];
+				if(alpha==0) {
+					//System.out.println("alpha found, skipping");
+					continue;
+				}
+
+
+				try {
+					if(!updated[row][col]) {
+						if1.getBum().setRGB(newx, newy, (new Color(r, g, b)).getRGB());
+						updated[row][col] = true;
+					}
+
+				} catch(ArrayIndexOutOfBoundsException e) {
+
+				}
+
+				if(!updated[row][col]) {
+					if1.getBum().setRGB(row, col, (new Color(0, 0, 0)).getRGB());
+				}
+
+			}
+		}
+
+		//return new ImageFrame(deltaComparison(if1, if2));
+
+		return new ImageFrame(if1.getBum());
+	}
+
+	public int getDeterminant(int aa, int bb, int cc, int dd, int ee, int ff) {
+		return aa*dd - aa*ff - bb*cc + bb*ee + cc*ff - dd*ee;
+	}
+
+	public double getDistance(double x1, double x2, double y1, double y2) {
+		return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
+	}
+
+	public double getDistance(DensityPix dp1, DensityPix dp2) {
+		System.out.println("dist between "+dp1.x+","+dp1.y+" and "+dp2.x+","+dp2.y);
+		return Math.sqrt(Math.pow((dp1.x-dp2.x), 2) + Math.pow((dp1.y-dp2.y), 2));
+	}
+
 	public ImageFrame avg(ImageFrame if1, ImageFrame if2) {
-		
+
 		int smallerWidth = (if1.getWidth() < if2.getWidth()) ? if1.getWidth() : if2.getWidth();
 		int smallerHeight = (if1.getHeight() < if2.getHeight()) ? if1.getHeight() : if2.getHeight();
-		
+
 		for(int h=0; h<smallerHeight; h++) {
 			for(int w=0; w<smallerWidth; w++) {
 				int [] pixArr1 = new int[4];
 				if1.getRar().getPixel(w, h, pixArr1);
-				
+
 				int [] pixArr2 = new int[4];
 				if2.getRar().getPixel(w, h, pixArr2);
-				
+
 				if(pixArr1[3]==0 || pixArr2[3]==0) {
 					continue;
 				}
-				
+
 				int newr = (pixArr1[0]+pixArr2[0])/2;
 				int newg = (pixArr1[1]+pixArr2[1])/2;
 				int newb = (pixArr1[2]+pixArr2[2])/2;
-				
-				
+
+
 				if1.getBum().setRGB(w, h, new Color(newr, newg, newb).getRGB());
 			}
 		}
-		
+
 		return new ImageFrame(if1.getBum());
 	}
-	
-	
-	/**
-	 * @deprecated Use pixAreaItr(...) method instead!
-	 * 
-	 * Finds the area of a region containing the indicated pixel at (x,y)
-	 * This recursive code words for small input but quickly errors: StackOverflow
-	 * Need to use the iterative variation of this algorithm.
-	 * Perhaps use tail recursion in this algorithm?
-	 * 
-	 * @param x
-	 * @param y
-	 * @param pixChecked
-	 * @param r
-	 * @return
-	 */
-	public int pixArea(int x, int y, boolean [][] pixChecked, Raster r) {
-		
-		int sumNorth = 0;
-		int sumEast = 0;
-		int sumSouth = 0;
-		int sumWest = 0;
-		
-		
-		System.out.println("checking "+x+", "+y);
-		
-		pixChecked[x][y] = true;
-		
-		
-		// check north
-		if(y-1 >= 0) {
-			if(pixChecked[x][y-1] == false) {
-				
-				int[] colorThis = new int[4];
-				r.getPixel(x, y, colorThis);
-				
-				int[] colorNorth = new int[4];
-				r.getPixel(x, y-1, colorNorth);
-				
-				if(colorThis[0]==colorNorth[0] && colorThis[1]==colorNorth[1] && colorThis[2]==colorNorth[2]) {
-					sumNorth = pixArea(x, y-1, pixChecked, r);
+
+	public ImageFrame cyan(ImageFrame if1) {
+
+		for(int h=0; h<if1.getHeight(); h++) {
+			for(int w=0; w<if1.getWidth(); w++) {
+				int [] pixArr1 = new int[4];
+				if1.getRar().getPixel(w, h, pixArr1);
+
+
+
+				if(pixArr1[0]==0 && pixArr1[1]==0xff && pixArr1[2]==0xff) {
+
+				}
+				else 
+				{
+					if1.getBum().setRGB(w, h, Color.white.getRGB());
 				}
 			}
 		}
-		
-		// check east
-		if(x+1 < r.getWidth()) {
-			if(pixChecked[x+1][y] == false) {
-				
-				int[] colorThis = new int[4];
-				r.getPixel(x, y, colorThis);
-				
-				int[] colorEast = new int[4];
-				r.getPixel(x+1, y, colorEast);
-				
-				if(colorThis[0]==colorEast[0] && colorThis[1]==colorEast[1] && colorThis[2]==colorEast[2]) {
-					sumEast = pixArea(x+1, y, pixChecked, r);
-				}
-			}
-		}
-		
-		// check south
-		if(y+1 < r.getHeight()) {
-			if(pixChecked[x][y+1] == false) {
-				
-				int[] colorThis = new int[4];
-				r.getPixel(x, y, colorThis);
-				
-				int[] colorSouth = new int[4];
-				r.getPixel(x, y+1, colorSouth);
-				
-				if(colorThis[0]==colorSouth[0] && colorThis[1]==colorSouth[1] && colorThis[2]==colorSouth[2]) {
-					sumEast = pixArea(x, y+1, pixChecked, r);
-				}
-			}
-		}
-		
-		// check west
-		if(x-1 >= 0) {
-			if(pixChecked[x-1][y] == false) {
-				
-				int[] colorThis = new int[4];
-				r.getPixel(x, y, colorThis);
-				
-				int[] colorWest = new int[4];
-				r.getPixel(x-1, y, colorWest);
-				
-				if(colorThis[0]==colorWest[0] && colorThis[1]==colorWest[1] && colorThis[2]==colorWest[2]) {
-					sumEast = pixArea(x-1, y, pixChecked, r);
-				}
-			}
-		}
-		
-		
-		
-		return sumNorth + sumEast + sumSouth + sumWest + 1;
-		
+
+		return new ImageFrame(if1.getBum());
 	}
-	
-	public class PixBox {
-		public int x;
-		public int y;
+
+
+	public ImageFrame smoothen(ImageFrame if1n) {
+
+		ImageFrame if1 = new ImageFrame(if1n);
+		// 2-D boolean array
+		pixChecked = new boolean[if1.getWidth()][if1.getHeight()];
+		for(int i=0; i<if1.getWidth(); i++) {
+			for(int j=0; j<if1.getHeight(); j++) {
+				pixChecked[i][j] = false;
+			}
+		}
+
+		//int area = pixAreaItr(5, 5, if1.getRar());
+		//System.out.println(area);
+
+		ArrayList<DensityPix> densityPixList = new ArrayList<DensityPix>();
+		for (int col = 1; col < if1.getHeight()-1; col++) {
+			for (int row = 1; row < if1.getWidth()-1; row++) {
+
+				int[] color = new int[4];
+				if1.getRar().getPixel(row, col, color);
+				int r = (int)(color[0]);
+				int g = (int)(color[1]);
+				int b = (int)(color[2]);
+
+				int alpha = color[3];
+
+				if(alpha==0) {
+					continue;
+				}
+
+				if(pixChecked[row][col]==false) {
+					sumX = 0;
+					sumY = 0;
+					int area = pixAreaItr(row, col, if1.getRar());
+					System.out.println("("+row+","+col+"): "+area);
+					int avgx = sumX/area;
+					int avgy = sumY/area;
+
+					//System.out.println("("+avgx+","+avgy+"): "+area);
+
+					Color c = new Color(r, g, b);
+
+					densityPixList.add(new DensityPix(avgx, avgy, area, c.getRGB()));
+				}
+			}
+		}
+
+
+		System.out.println("dens size: "+densityPixList.size());
+
+		// filter out weaker densities
+		Collections.sort(densityPixList, new Comparator<DensityPix>() {
+			@Override
+			public int compare(DensityPix o1, DensityPix o2) {
+				if(o1.area > o2.area) 
+					return -1;
+				if(o1.area < o2.area) 
+					return 1;
+				else return 0;
+			}
+
+		});
+
+		if(densityPixList.size()>12) {
+			densityPixList = new ArrayList<DensityPix>(densityPixList.subList(0, 12));
+		}
+
+
+		for(DensityPix dp : densityPixList) {
+			if1.getBum().setRGB(dp.x, dp.y, Color.BLACK.getRGB());
+
+			// optionally amplify colors
+			amplifyPix(if1, dp, 3);
+		}
+
+
+		//ImageFrameEssence ife = new ImageFrameEssence(if1.getBum());
+		//ife.setDensityPixList(densityPixList);
+		return new ImageFrame(if1.getBum());
+
 	}
-	
-	
-	/**
-	 * Iterative algorithm to find the area of a region with indicated pixel
-	 * @param x
-	 * @param y
-	 * @param pixChecked
-	 * @param r
-	 * @return
-	 */
-	public int pixAreaItr(int x, int y, Raster r) {
-		
+
+
+	private boolean[][] pixFillWhite(int x, int y, Raster r) {
+
 		boolean end = false;
 		int area = 1;
 		
-		Stack<PixBox> prevPixStack = new Stack<Engine.PixBox>();
+		boolean [][] fillWhite = new boolean[r.getWidth()][r.getHeight()];
 		
+		for(int j=0; j<r.getHeight()-1; j++) {
+			for(int i=0; i<r.getWidth()-1; i++) {
+				fillWhite[i][j] = false;
+			}
+		}
+
+		Stack<PixBox> prevPixStack = new Stack<Engine.PixBox>();
+
 		while(!end) {
-			
+
 			boolean nDone = false;
 			boolean eDone = false;
 			boolean sDone = false;
 			boolean wDone = false;
-			
+
 			//System.out.println("checking pixel ("+x+","+y+")");
 			pixChecked[x][y] = true;
 
-			
+
 			// check north
 			if(y-1 >= 0) {
 				if(pixChecked[x][y-1] == false) {
-					
+
 					int[] colorThis = new int[4];
 					r.getPixel(x, y, colorThis);
-					
+
 					int[] colorNorth = new int[4];
 					r.getPixel(x, y-1, colorNorth);
-					
+
 					if(colorThis[0]==colorNorth[0] && colorThis[1]==colorNorth[1] && colorThis[2]==colorNorth[2]) {
 						PixBox pb = new PixBox();
 						pb.x = x;
 						pb.y = y;
 						prevPixStack.push(pb);
-						
+						fillWhite[x][y] = true;
 						x = x;
 						y = y-1;
 						area++;
-						
+
 						continue;
 					}
 					else {
@@ -976,27 +1287,27 @@ public class Engine {
 				//System.out.println("north done, out of bounds");
 				nDone = true;
 			}
-			
+
 			// check east
 			if(x+1 < r.getWidth()) {
 				if(pixChecked[x+1][y] == false) {
-					
+
 					int[] colorThis = new int[4];
 					r.getPixel(x, y, colorThis);
-					
+
 					int[] colorEast = new int[4];
 					r.getPixel(x+1, y, colorEast);
-					
+
 					if(colorThis[0]==colorEast[0] && colorThis[1]==colorEast[1] && colorThis[2]==colorEast[2]) {
 						PixBox pb = new PixBox();
 						pb.x = x;
 						pb.y = y;
 						prevPixStack.push(pb);
-						
+						fillWhite[x][y] = true;
 						x = x+1;
 						y = y;
 						area++;
-						
+
 						continue;
 					}
 					else {
@@ -1013,28 +1324,28 @@ public class Engine {
 				eDone = true;
 				//System.out.println("east done, out of bounds");
 			}
-			
-			
+
+
 			// check south
 			if(y+1 < r.getHeight()) {
 				if(pixChecked[x][y+1] == false) {
-					
+
 					int[] colorThis = new int[4];
 					r.getPixel(x, y, colorThis);
-					
+
 					int[] colorSouth = new int[4];
 					r.getPixel(x, y+1, colorSouth);
-					
+
 					if(colorThis[0]==colorSouth[0] && colorThis[1]==colorSouth[1] && colorThis[2]==colorSouth[2]) {
 						PixBox pb = new PixBox();
 						pb.x = x;
 						pb.y = y;
 						prevPixStack.push(pb);
-						
+						fillWhite[x][y] = true;
 						x = x;
 						y = y+1;
 						area++;
-						
+
 						continue;
 					}
 					else {
@@ -1051,27 +1362,27 @@ public class Engine {
 				sDone = true;
 				//System.out.println("south done, out of bounds");
 			}
-			
+
 			// check west
 			if(x-1 >= 0) {
 				if(pixChecked[x-1][y] == false) {
-					
+
 					int[] colorThis = new int[4];
 					r.getPixel(x, y, colorThis);
-					
+
 					int[] colorWest = new int[4];
 					r.getPixel(x-1, y, colorWest);
-					
+
 					if(colorThis[0]==colorWest[0] && colorThis[1]==colorWest[1] && colorThis[2]==colorWest[2]) {
 						PixBox pb = new PixBox();
 						pb.x = x;
 						pb.y = y;
 						prevPixStack.push(pb);
-						
+						fillWhite[x][y] = true;
 						x = x-1;
 						y = y;
 						area++;
-						
+
 						continue;
 					}
 					else {
@@ -1089,13 +1400,13 @@ public class Engine {
 				//System.out.println("west done, out of bounds");
 			}
 
-			
+
 			if(nDone && eDone && sDone && wDone) {
 				try {
 					//System.out.println("stack size: " + prevPixStack.size());
 					sumX += x;
 					sumY += y;
-					
+
 					PixBox pb = prevPixStack.pop();
 					x = pb.x;
 					y = pb.y;
@@ -1104,11 +1415,311 @@ public class Engine {
 					end = true;
 				}
 			}
-			
+
 		}
-		
+
+		System.out.println("~"+area);
+		return fillWhite;
+	}
+
+	/**
+	 * @deprecated Use pixAreaItr(...) method instead!
+	 * 
+	 * Finds the area of a region containing the indicated pixel at (x,y)
+	 * This recursive code words for small input but quickly errors: StackOverflow
+	 * Need to use the iterative variation of this algorithm.
+	 * Perhaps use tail recursion in this algorithm?
+	 * 
+	 * @param x
+	 * @param y
+	 * @param pixChecked
+	 * @param r
+	 * @return
+	 */
+	public int pixArea(int x, int y, boolean [][] pixChecked, Raster r) {
+
+		int sumNorth = 0;
+		int sumEast = 0;
+		int sumSouth = 0;
+		int sumWest = 0;
+
+
+		System.out.println("checking "+x+", "+y);
+
+		pixChecked[x][y] = true;
+
+
+		// check north
+		if(y-1 >= 0) {
+			if(pixChecked[x][y-1] == false) {
+
+				int[] colorThis = new int[4];
+				r.getPixel(x, y, colorThis);
+
+				int[] colorNorth = new int[4];
+				r.getPixel(x, y-1, colorNorth);
+
+				if(colorThis[0]==colorNorth[0] && colorThis[1]==colorNorth[1] && colorThis[2]==colorNorth[2]) {
+					sumNorth = pixArea(x, y-1, pixChecked, r);
+				}
+			}
+		}
+
+		// check east
+		if(x+1 < r.getWidth()) {
+			if(pixChecked[x+1][y] == false) {
+
+				int[] colorThis = new int[4];
+				r.getPixel(x, y, colorThis);
+
+				int[] colorEast = new int[4];
+				r.getPixel(x+1, y, colorEast);
+
+				if(colorThis[0]==colorEast[0] && colorThis[1]==colorEast[1] && colorThis[2]==colorEast[2]) {
+					sumEast = pixArea(x+1, y, pixChecked, r);
+				}
+			}
+		}
+
+		// check south
+		if(y+1 < r.getHeight()) {
+			if(pixChecked[x][y+1] == false) {
+
+				int[] colorThis = new int[4];
+				r.getPixel(x, y, colorThis);
+
+				int[] colorSouth = new int[4];
+				r.getPixel(x, y+1, colorSouth);
+
+				if(colorThis[0]==colorSouth[0] && colorThis[1]==colorSouth[1] && colorThis[2]==colorSouth[2]) {
+					sumEast = pixArea(x, y+1, pixChecked, r);
+				}
+			}
+		}
+
+		// check west
+		if(x-1 >= 0) {
+			if(pixChecked[x-1][y] == false) {
+
+				int[] colorThis = new int[4];
+				r.getPixel(x, y, colorThis);
+
+				int[] colorWest = new int[4];
+				r.getPixel(x-1, y, colorWest);
+
+				if(colorThis[0]==colorWest[0] && colorThis[1]==colorWest[1] && colorThis[2]==colorWest[2]) {
+					sumEast = pixArea(x-1, y, pixChecked, r);
+				}
+			}
+		}
+
+
+
+		return sumNorth + sumEast + sumSouth + sumWest + 1;
+
+	}
+
+	public class PixBox {
+		public int x;
+		public int y;
+	}
+
+
+	/**
+	 * Iterative algorithm to find the area of a region with indicated pixel
+	 * @param x
+	 * @param y
+	 * @param pixChecked
+	 * @param r
+	 * @return
+	 */
+	public int pixAreaItr(int x, int y, Raster r) {
+
+		boolean end = false;
+		int area = 1;
+
+		Stack<PixBox> prevPixStack = new Stack<Engine.PixBox>();
+
+		while(!end) {
+
+			boolean nDone = false;
+			boolean eDone = false;
+			boolean sDone = false;
+			boolean wDone = false;
+
+			//System.out.println("checking pixel ("+x+","+y+")");
+			pixChecked[x][y] = true;
+
+
+			// check north
+			if(y-1 >= 0) {
+				if(pixChecked[x][y-1] == false) {
+
+					int[] colorThis = new int[4];
+					r.getPixel(x, y, colorThis);
+
+					int[] colorNorth = new int[4];
+					r.getPixel(x, y-1, colorNorth);
+
+					if(colorThis[0]==colorNorth[0] && colorThis[1]==colorNorth[1] && colorThis[2]==colorNorth[2]) {
+						PixBox pb = new PixBox();
+						pb.x = x;
+						pb.y = y;
+						prevPixStack.push(pb);
+
+						x = x;
+						y = y-1;
+						area++;
+
+						continue;
+					}
+					else {
+						nDone = true;
+						//System.out.println("north done, different color");
+					}
+				}
+				else {
+					//System.out.println("north done, checked");
+					nDone = true;
+				}
+			}
+			else {
+				//System.out.println("north done, out of bounds");
+				nDone = true;
+			}
+
+			// check east
+			if(x+1 < r.getWidth()) {
+				if(pixChecked[x+1][y] == false) {
+
+					int[] colorThis = new int[4];
+					r.getPixel(x, y, colorThis);
+
+					int[] colorEast = new int[4];
+					r.getPixel(x+1, y, colorEast);
+
+					if(colorThis[0]==colorEast[0] && colorThis[1]==colorEast[1] && colorThis[2]==colorEast[2]) {
+						PixBox pb = new PixBox();
+						pb.x = x;
+						pb.y = y;
+						prevPixStack.push(pb);
+
+						x = x+1;
+						y = y;
+						area++;
+
+						continue;
+					}
+					else {
+						eDone = true;
+						//System.out.println("east done, different color");
+					}
+				}
+				else {
+					eDone = true;
+					//System.out.println("east done, checked");
+				}
+			}
+			else {
+				eDone = true;
+				//System.out.println("east done, out of bounds");
+			}
+
+
+			// check south
+			if(y+1 < r.getHeight()) {
+				if(pixChecked[x][y+1] == false) {
+
+					int[] colorThis = new int[4];
+					r.getPixel(x, y, colorThis);
+
+					int[] colorSouth = new int[4];
+					r.getPixel(x, y+1, colorSouth);
+
+					if(colorThis[0]==colorSouth[0] && colorThis[1]==colorSouth[1] && colorThis[2]==colorSouth[2]) {
+						PixBox pb = new PixBox();
+						pb.x = x;
+						pb.y = y;
+						prevPixStack.push(pb);
+
+						x = x;
+						y = y+1;
+						area++;
+
+						continue;
+					}
+					else {
+						sDone = true;
+						//System.out.println("south done, different color");
+					}
+				}
+				else {
+					sDone = true;
+					//System.out.println("south done, checked");
+				}
+			}
+			else {
+				sDone = true;
+				//System.out.println("south done, out of bounds");
+			}
+
+			// check west
+			if(x-1 >= 0) {
+				if(pixChecked[x-1][y] == false) {
+
+					int[] colorThis = new int[4];
+					r.getPixel(x, y, colorThis);
+
+					int[] colorWest = new int[4];
+					r.getPixel(x-1, y, colorWest);
+
+					if(colorThis[0]==colorWest[0] && colorThis[1]==colorWest[1] && colorThis[2]==colorWest[2]) {
+						PixBox pb = new PixBox();
+						pb.x = x;
+						pb.y = y;
+						prevPixStack.push(pb);
+
+						x = x-1;
+						y = y;
+						area++;
+
+						continue;
+					}
+					else {
+						wDone = true;
+						//System.out.println("west done, different color");
+					}
+				}
+				else {
+					wDone = true;
+					//System.out.println("west done, checked");
+				}
+			}
+			else {
+				wDone = true;
+				//System.out.println("west done, out of bounds");
+			}
+
+
+			if(nDone && eDone && sDone && wDone) {
+				try {
+					//System.out.println("stack size: " + prevPixStack.size());
+					sumX += x;
+					sumY += y;
+
+					PixBox pb = prevPixStack.pop();
+					x = pb.x;
+					y = pb.y;
+				}
+				catch (EmptyStackException e) {
+					end = true;
+				}
+			}
+
+		}
+
 		return area;
 	}
 
-	
+
 }

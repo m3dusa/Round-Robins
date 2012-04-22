@@ -367,6 +367,21 @@ public class SelectAlg extends javax.swing.JFrame {
 			else
 				biOut = Engine.getInstance().process(Engine.ALG_SIMPLIFY_AMPLIFY, img2);
 		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_CYAN){
+			if(img1!=null)
+				biOut = Engine.getInstance().process(Engine.ALG_CYAN, img1);
+			else
+				biOut = Engine.getInstance().process(Engine.ALG_CYAN, img2);
+		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_DIFF){
+			biOut = Engine.getInstance().process(Engine.ALG_DIFF, img1, img2);
+		}
+		else if (Engine.getInstance().revMap.get(algMenu.getSelectedValue()) == Engine.ALG_SMOOTHEN){
+			if(img1!=null)
+				biOut = Engine.getInstance().process(Engine.ALG_SMOOTHEN, img1);
+			else
+				biOut = Engine.getInstance().process(Engine.ALG_SMOOTHEN, img2);
+		}
 		
 		
 		

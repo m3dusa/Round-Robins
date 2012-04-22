@@ -262,10 +262,7 @@ public class GUI extends javax.swing.JFrame {
 			imgIc1.setImage(image);
 			pic1.setIcon(imgIc1);
 
-			ImageFrame newImgFrame = new ImageFrame(path);
-			Engine.getInstance().addImage(newImgFrame);
-
-
+			
 			ifPic1 = new ImageFrame(path);
 			Engine.getInstance().addImage(ifPic1);
 			
