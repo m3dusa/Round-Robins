@@ -294,14 +294,31 @@ public class Engine {
 		if1.getBum().getData().getPixel(p.x, p.y, pixArr);
 		Color col = new Color(pixArr[0], pixArr[1], pixArr[2]);
 		for(int i=0; i<intensity; i++) {
-			if1.getBum().setRGB(p.x+i, p.y, col.getRGB());
-			if1.getBum().setRGB(p.x-i, p.y, col.getRGB());
-			if1.getBum().setRGB(p.x+i, p.y+i, col.getRGB());
-			if1.getBum().setRGB(p.x-i, p.y+i, col.getRGB());
-			if1.getBum().setRGB(p.x+i, p.y-i, col.getRGB());
-			if1.getBum().setRGB(p.x-i, p.y-i, col.getRGB());
-			if1.getBum().setRGB(p.x, p.y+i, col.getRGB());
-			if1.getBum().setRGB(p.x, p.y-i, col.getRGB());
+			try {
+				if1.getBum().setRGB(p.x+i, p.y, col.getRGB());
+			} catch(ArrayIndexOutOfBoundsException e) {};
+			try {
+				if1.getBum().setRGB(p.x-i, p.y, col.getRGB());
+			} catch(ArrayIndexOutOfBoundsException e) {};
+			try {
+				if1.getBum().setRGB(p.x+i, p.y+i, col.getRGB());
+			} catch(ArrayIndexOutOfBoundsException e) {};
+			try {
+				if1.getBum().setRGB(p.x-i, p.y+i, col.getRGB());
+			} catch(ArrayIndexOutOfBoundsException e) {};
+			try {
+				if1.getBum().setRGB(p.x+i, p.y-i, col.getRGB());
+			} catch(ArrayIndexOutOfBoundsException e) {};
+			try {
+				if1.getBum().setRGB(p.x-i, p.y-i, col.getRGB());
+			} catch(ArrayIndexOutOfBoundsException e) {};
+			try {
+				if1.getBum().setRGB(p.x, p.y+i, col.getRGB());
+			} catch(ArrayIndexOutOfBoundsException e) {};
+			try {
+				if1.getBum().setRGB(p.x, p.y-i, col.getRGB());
+			} catch(ArrayIndexOutOfBoundsException e) {};
+			
 		}
 		
 	}
@@ -325,6 +342,7 @@ public class Engine {
 				// + " " + d1Array[2] + " " + d1Array[3]);
 
 				int[] d2Array = new int[4];
+				System.out.println("at "+row+", "+col);
 				if2.getRar().getPixel(row, col, d2Array);
 				// System.out.println("image 2: " + d2Array[0] + " " +
 				// d2Array[1]
@@ -742,8 +760,8 @@ public class Engine {
 			
 		});
 		
-		if(densityPixList.size()>2) {
-			densityPixList = new ArrayList<DensityPix>(densityPixList.subList(0, 2));
+		if(densityPixList.size()>8) {
+			densityPixList = new ArrayList<DensityPix>(densityPixList.subList(0, 8));
 		}
 		
 		
@@ -751,7 +769,7 @@ public class Engine {
 			if1.getBum().setRGB(dp.x, dp.y, dp.col);
 			
 			// optionally amplify colors
-			 amplifyPix(if1, dp, 2);
+			 amplifyPix(if1, dp, 3);
 		}
 		
 		
